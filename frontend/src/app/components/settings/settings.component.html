@@ -1,0 +1,170 @@
+<div class="settings-container">
+  <h2>Account Settings</h2>
+
+  <!-- Tab Navigation -->
+  <div class="tabs">
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'privacy'"
+      (click)="setActiveTab('privacy')"
+    >
+      Privacy
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'posts'"
+      (click)="setActiveTab('posts')"
+    >
+      My Posts ({{ myPosts.length }})
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'likes'"
+      (click)="setActiveTab('likes')"
+    >
+      Liked Posts ({{ myLikedPosts.length }})
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'comments'"
+      (click)="setActiveTab('comments')"
+    >
+      My Comments ({{ myComments.length }})
+    </button>
+  </div>
+
+  <!-- Privacy Tab -->
+  <div class="settings-section" *ngIf="activeTab === 'privacy'">
+    <h3>Privacy</h3>
+    <div class="privacy-toggle">
+      <label>
+        <input
+          type="checkbox"
+          [checked]="isPrivate"
+          (change)="togglePrivacy()"
+          [disabled]="isUpdating"
+        />
+        <span>Private Account</span>
+      </label>
+      <p class="privacy-description">
+        {{
+          isPrivate
+            ? "Your account is private. Only followers can see your posts."
+            : "Your account is public. Anyone can see your posts."
+        }}
+      </p>
+    </div>
+    <div
+      class="message"
+      *ngIf="message"
+      [class.success]="!message.includes('Failed')"
+    >
+      {{ message }}
+    </div>
+  </div>
+
+  <!-- My Posts Tab -->
+  <div class="settings-section" *ngIf="activeTab === 'posts'">
+    <h3>My Posts</h3>
+    <div class="loading" *ngIf="isLoadingPosts">Loading posts...</div>
+
+    <div class="posts-list" *ngIf="!isLoadingPosts">
+      <div class="post-card" *ngFor="let post of myPosts">
+        <div class="post-image" *ngIf="post.image">
+          <img [src]="post.image" [alt]="post.title" />
+        </div>
+        <div class="post-content">
+          <span class="post-category">{{ post.category }}</span>
+          <h4>
+            <a [routerLink]="['/blog', post._id]">{{ post.title }}</a>
+          </h4>
+          <p class="post-excerpt">{{ truncateContent(post.content, 150) }}</p>
+          <div class="post-stats">
+            <span class="stat">❤️ {{ post.likesCount || 0 }} Likes</span>
+            <span class="stat">💬 {{ post.commentsCount || 0 }} Comments</span>
+            <span class="stat">📅 {{ formatDate(post.createdAt) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-state" *ngIf="myPosts.length === 0">
+        <p>You haven't created any posts yet.</p>
+        <a routerLink="/blog/create" class="btn btn-primary"
+          >Create Your First Post</a
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- Liked Posts Tab -->
+  <div class="settings-section" *ngIf="activeTab === 'likes'">
+    <h3>Posts I've Liked</h3>
+    <div class="loading" *ngIf="isLoadingLikes">Loading liked posts...</div>
+
+    <div class="posts-list" *ngIf="!isLoadingLikes">
+      <div class="post-card" *ngFor="let post of myLikedPosts">
+        <div class="post-image" *ngIf="post.image">
+          <img [src]="post.image" [alt]="post.title" />
+        </div>
+        <div class="post-content">
+          <span class="post-category">{{ post.category }}</span>
+          <h4>
+            <a [routerLink]="['/blog', post._id]">{{ post.title }}</a>
+          </h4>
+          <div class="post-author">
+            By
+            <a [routerLink]="['/user', post.author.userName]">{{
+              post.author.name
+            }}</a>
+          </div>
+          <div class="post-stats">
+            <span class="stat">❤️ Liked on {{ formatDate(post.likedAt) }}</span>
+            <span class="stat"
+              >📅 Posted on {{ formatDate(post.createdAt) }}</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-state" *ngIf="myLikedPosts.length === 0">
+        <p>You haven't liked any posts yet.</p>
+        <a routerLink="/" class="btn btn-primary">Browse Posts</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- My Comments Tab -->
+  <div class="settings-section" *ngIf="activeTab === 'comments'">
+    <h3>My Comments</h3>
+    <div class="loading" *ngIf="isLoadingComments">Loading comments...</div>
+
+    <div class="comments-list" *ngIf="!isLoadingComments">
+      <div class="comment-card" *ngFor="let comment of myComments">
+        <div class="comment-content">
+          <p class="comment-text">{{ comment.content }}</p>
+          <div class="comment-meta">
+            <span
+              >On post:
+              <a [routerLink]="['/blog', comment.blog._id]">{{
+                comment.blog.title
+              }}</a></span
+            >
+            <span>by {{ comment.blogAuthor.name }}</span>
+            <span class="comment-date">{{
+              formatDate(comment.createdAt)
+            }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-state" *ngIf="myComments.length === 0">
+        <p>You haven't made any comments yet.</p>
+        <a routerLink="/" class="btn btn-primary">Browse Posts</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="back-link">
+    <a routerLink="/">← Back to home</a>
+  </div>
+</div>

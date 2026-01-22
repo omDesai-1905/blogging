@@ -3,81 +3,91 @@ import { AsyncHandler } from "../utils/asyncHandles.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import bcrypt from "bcryptjs";
-import { loginSchema, changePasswordSchema } from "../schema/auth.schema.js"; // Add missing imports
+import {
+  registerSchema,
+  loginSchema,
+  changePasswordSchema,
+} from "../schema/auth.schema.js";
 import { deleteImage, uploadOnCouldinary } from "../utils/couldinary.js";
 
 export const registerUser = AsyncHandler(async (req, res) => {
-  if (!req.body) {
-    throw new ApiError(400, "Request body is required");
-  }
+  try {
+    const { name, email, userName, password } = req.body;
 
-  const { name, email, userName, password } = req.body;
+    // Validate request body
+    await registerSchema.validate({ name, email, userName, password });
 
-  if (!name || !email || !userName || !password) {
-    throw new ApiError(
-      400,
-      "All fields (name, email, userName, password) are required"
+    const userExits = await User.findOne({
+      $or: [{ email }, { userName }],
+    });
+    if (userExits) {
+      throw new ApiError(400, "user already exists");
+    }
+
+    const user = await User.create({
+      name,
+      email,
+      userName,
+      password,
+      avatar: "",
+    });
+
+    const createdUser = await User.findById(user._id).select("-password");
+
+    if (!createdUser) {
+      throw new ApiError(400, "Failed to create User");
+    }
+
+    const accessToken = createdUser.generateAccessToken();
+
+    const response = new ApiResponse(
+      201,
+      { user: createdUser, accessToken },
+      "user Created Successfully"
     );
+    return res.status(response.statusCode).json(response);
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      throw new ApiError(400, error.message);
+    }
+    throw error;
   }
-
-  const userExits = await User.findOne({
-    $or: [{ email }, { userName }],
-  });
-  if (userExits) {
-    throw new ApiError(400, "user already exists");
-  }
-
-  const user = await User.create({
-    name,
-    email,
-    userName,
-    password,
-    avatar: ""
-  });
-
-  const createdUser = await User.findById(user._id).select("-password");
-
-  if (!createdUser) {
-    throw new ApiError(400, "Failed to create User");
-  }
-
-  const token = createdUser.generateAccessToken();
-
-  const response = new ApiResponse(
-    201,
-    { user: createdUser, token },
-    "user Created Successfully"
-  );
-  return res.status(response.statusCode).json(response);
 });
 
 export const loginUser = AsyncHandler(async (req, res) => {
-  const { userName, email, password } = req.body;
-  await loginSchema.validate({ email, userName, password });
+  try {
+    const { userName, email, password } = req.body;
+    await loginSchema.validate({ email, userName, password });
 
-  const user = await User.findOne({
-    $or: [{ email }, { userName }],
-  });
-  if (!user) {
-    throw new ApiError(400, "Invalid Credentials");
+    const user = await User.findOne({
+      $or: [{ email }, { userName }],
+    });
+    if (!user) {
+      throw new ApiError(400, "Invalid Credentials");
+    }
+
+    const isPasswordCorrect = await user.isPasswordCorrect(password);
+
+    if (!isPasswordCorrect) {
+      throw new ApiError(400, "Invalid Credentials Password Incorrect");
+    }
+
+    const accessToken = user.generateAccessToken();
+
+    const loggedInUser = await User.findById(user._id).select("-password");
+
+    const response = new ApiResponse(
+      200,
+      { user: loggedInUser, accessToken },
+      "User Logged In Successfully"
+    );
+    return res.status(response.statusCode).json(response);
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      throw new ApiError(400, error.message);
+    }
+    throw error;
   }
-
-  const isPasswordCorrect = await user.isPasswordCorrect(password);
-
-  if (!isPasswordCorrect) {
-    throw new ApiError(400, "Invalid Credentials Password Incorrect");
-  }
-
-  const token = user.generateAccessToken();
-
-  const loggedInUser = await User.findById(user._id).select("-password");
-
-  const response = new ApiResponse(
-    200,
-    { loggedInUser, token },
-    "User Logged In Successfully"
-  );
-  return res.status(response.statusCode).json(response);
 });
 
 export const loggedOutUser = AsyncHandler(async (req, res) => {
@@ -162,11 +172,11 @@ export const resetPassword = AsyncHandler(async (req, res) => {
 export const changeAvatar = AsyncHandler(async (req, res) => {
   const user = req.user;
   const file = req.file;
-  if(!file) {
+  if (!file) {
     throw new ApiError(400, "No file uploaded, please provide an image");
   }
 
-  if(!user.avatar) {
+  if (!user.avatar) {
     await deleteImage(user.avatar);
   }
 
@@ -178,7 +188,11 @@ export const changeAvatar = AsyncHandler(async (req, res) => {
   user.avatar = imageUrl.secure_url;
   await user.save();
 
-  const response = new ApiResponse(200, { avatar: user.avatar }, "Avatar changed successfully");
+  const response = new ApiResponse(
+    200,
+    { avatar: user.avatar },
+    "Avatar changed successfully"
+  );
   return res.status(response.statusCode).json(response);
 });
 
@@ -191,12 +205,15 @@ export const updateUser = AsyncHandler(async (req, res) => {
   // }
   await updateUserSchema.validate({ name, email, userName, gender });
   const isEmailTaken = await User.findOne({ email });
-  
+
   if (isEmailTaken && isEmailTaken._id.toString() !== user._id.toString()) {
     throw new ApiError(400, "Email is already taken");
   }
 
-  if (isUserNameTaken && isUserNameTaken._id.toString() !== user._id.toString()) {
+  if (
+    isUserNameTaken &&
+    isUserNameTaken._id.toString() !== user._id.toString()
+  ) {
     throw new ApiError(400, "Username is already taken");
   }
 

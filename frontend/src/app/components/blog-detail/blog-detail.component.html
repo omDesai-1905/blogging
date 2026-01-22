@@ -1,0 +1,92 @@
+<div class="blog-detail-container">
+  <div class="loading" *ngIf="isLoading">
+    <p>Loading blog...</p>
+  </div>
+
+  <div class="error-message" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <div class="blog-detail" *ngIf="!isLoading && blog">
+    <div class="blog-header">
+      <div class="blog-category">{{ blog.category }}</div>
+      <h1>{{ blog.title }}</h1>
+
+      <div class="blog-meta">
+        <span class="author">By {{ blog.user?.name || blog.userEmail }}</span>
+        <span class="date">{{ formatDate(blog.createdAt) }}</span>
+        <span class="views">👁 {{ blog.visit }} views</span>
+      </div>
+
+      <div class="blog-actions" *ngIf="canEditBlog()">
+        <a [routerLink]="['/blog/edit', blog._id]" class="btn btn-secondary"
+          >Edit</a
+        >
+        <button (click)="deleteBlog()" class="btn btn-danger">Delete</button>
+      </div>
+    </div>
+
+    <div class="blog-image" *ngIf="blog.image">
+      <img [src]="blog.image" [alt]="blog.title" />
+    </div>
+
+    <div class="blog-content">
+      <div [innerHTML]="blog.content"></div>
+    </div>
+
+    <div class="blog-interaction">
+      <button
+        (click)="toggleLike()"
+        class="like-btn"
+        [class.liked]="blog.isLiked"
+        [disabled]="isTogglingLike"
+      >
+        {{ blog.isLiked ? "❤️" : "🤍" }}
+        {{ blog.likesCount || 0 }}
+        {{ blog.likesCount === 1 ? "Like" : "Likes" }}
+      </button>
+      <button (click)="shareBlog()" class="share-btn">🔗 Share</button>
+    </div>
+
+    <div class="comments-section">
+      <h3>Comments ({{ comments.length }})</h3>
+
+      <div class="comment-form" *ngIf="isAuthenticated">
+        <textarea
+          [(ngModel)]="commentText"
+          placeholder="Write a comment..."
+          rows="3"
+        ></textarea>
+        <button
+          (click)="submitComment()"
+          class="btn btn-primary"
+          [disabled]="!commentText.trim() || isSubmittingComment"
+        >
+          {{ isSubmittingComment ? "Posting..." : "Post Comment" }}
+        </button>
+      </div>
+
+      <div class="login-prompt" *ngIf="!isAuthenticated">
+        <p><a routerLink="/login">Login</a> to post a comment</p>
+      </div>
+
+      <div class="comments-list">
+        <div class="comment" *ngFor="let comment of comments">
+          <div class="comment-author">
+            {{ comment.user?.name || comment.userId }}
+          </div>
+          <div class="comment-content">{{ comment.content }}</div>
+          <div class="comment-date">{{ formatDate(comment.createdAt) }}</div>
+        </div>
+
+        <div class="no-comments" *ngIf="comments.length === 0">
+          <p>No comments yet. Be the first to comment!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="back-link">
+    <a routerLink="/">← Back to all blogs</a>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+<div class="blog-list-container">
+  <div class="header-section">
+    <h1>Blog Posts</h1>
+    <a routerLink="/blog/create" class="btn btn-primary">Create New Post</a>
+  </div>
+
+  <div class="loading" *ngIf="isLoading">
+    <p>Loading blogs...</p>
+  </div>
+
+  <div class="error-message" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <div class="blogs-grid" *ngIf="!isLoading && blogs.length > 0">
+    <div class="blog-card" *ngFor="let blog of blogs">
+      <div class="blog-image" *ngIf="blog.image">
+        <img [src]="blog.image" [alt]="blog.title" />
+      </div>
+
+      <div class="blog-content">
+        <div class="blog-category">{{ blog.category }}</div>
+
+        <h2>
+          <a [routerLink]="['/blog', blog._id]">{{ blog.title }}</a>
+        </h2>
+
+        <p class="blog-excerpt">{{ getExcerpt(blog.content) }}</p>
+
+        <div class="blog-meta">
+          <span class="author">By {{ blog.user?.name || blog.userEmail }}</span>
+          <span class="date">{{ formatDate(blog.createdAt) }}</span>
+        </div>
+
+        <div class="blog-stats">
+          <span class="views">👁 {{ blog.visit }} views</span>
+          <span class="likes" *ngIf="blog.likesCount"
+            >❤️ {{ blog.likesCount }} likes</span
+          >
+          <span class="comments" *ngIf="blog.commentsCount"
+            >💬 {{ blog.commentsCount }} comments</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="no-blogs"
+    *ngIf="!isLoading && blogs.length === 0 && !errorMessage"
+  >
+    <p>No blog posts found. Be the first to create one!</p>
+  </div>
+</div>

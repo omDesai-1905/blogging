@@ -28,13 +28,15 @@ export const verifyJWT = AsyncHandler(async (req, res, next) => {
 });
 
 export const getLoggedInUserOrIgnore = AsyncHandler(async (req, res, next) => {
-  const { token } = req.cookies;
+  // Check for token in cookies or Authorization header
+  const token =
+    req.cookies?.token || req.header("Authorization")?.replace("Bearer ", "");
 
   try {
     const decodedData = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
     const user = await User.findById(decodedData?._id).select(
-      "-password -createdAt -updatedAt -__v"
+      "-password -createdAt -updatedAt -__v",
     );
 
     req.user = user;

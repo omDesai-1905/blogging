@@ -1,0 +1,122 @@
+<div class="profile-container">
+  <div class="loading" *ngIf="isLoading">Loading profile...</div>
+  <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <div class="profile-content" *ngIf="!isLoading && userProfile">
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="profile-info">
+        <div class="profile-name-section">
+          <h1>{{ "@" + userName }}</h1>
+          <span class="private-badge" *ngIf="userProfile.isPrivate"
+            >🔒 Private Account</span
+          >
+          <span
+            class="follows-you-badge"
+            *ngIf="userProfile.isFollowedByUser && !isOwnProfile()"
+            >Follows you</span
+          >
+        </div>
+        <div class="profile-stats">
+          <div class="stat">
+            <span class="stat-number">{{ userProfile.posts }}</span>
+            <span class="stat-label">Posts</span>
+          </div>
+          <div class="stat clickable" (click)="showFollowersList()">
+            <span class="stat-number">{{ userProfile.followers }}</span>
+            <span class="stat-label">Followers</span>
+          </div>
+          <div class="stat clickable" (click)="showFollowingList()">
+            <span class="stat-number">{{ userProfile.following }}</span>
+            <span class="stat-label">Following</span>
+          </div>
+        </div>
+
+        <!-- Follow/Unfollow Button (only show if not own profile) -->
+        <button
+          *ngIf="isAuthenticated && !isOwnProfile()"
+          class="btn"
+          [ngClass]="getFollowButtonClass()"
+          (click)="toggleFollow()"
+          [disabled]="isTogglingFollow"
+        >
+          {{ getFollowButtonText() }}
+        </button>
+      </div>
+    </div>
+
+    <!-- User Posts -->
+    <div class="user-posts">
+      <h2>Posts by {{ "@" + userName }}</h2>
+
+      <!-- Private Account - Not Following -->
+      <div class="private-account-message" *ngIf="isPrivateAndNotFollowing()">
+        <div class="lock-icon">🔒</div>
+        <h3>This Account is Private</h3>
+        <p>Follow this account to see their posts.</p>
+      </div>
+
+      <!-- Can View Posts -->
+      <ng-container *ngIf="!isPrivateAndNotFollowing()">
+        <div class="loading" *ngIf="isLoadingPosts">Loading posts...</div>
+
+        <div class="posts-grid" *ngIf="!isLoadingPosts">
+          <div class="post-card" *ngFor="let post of userPosts">
+            <div class="post-image" *ngIf="post.image">
+              <img [src]="post.image" [alt]="post.title" />
+            </div>
+            <div class="post-content">
+              <span class="post-category">{{ post.category }}</span>
+              <h3>
+                <a [routerLink]="['/blog', post._id]">{{ post.title }}</a>
+              </h3>
+              <p class="post-excerpt">
+                {{ truncateContent(post.content, 150) }}
+              </p>
+              <div class="post-meta">
+                <span class="post-date">{{ formatDate(post.createdAt) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-state" *ngIf="userPosts.length === 0">
+            <p>No posts yet.</p>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Followers/Following Modal -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ modalTitle }}</h3>
+        <button class="close-btn" (click)="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="loading" *ngIf="isLoadingModal">Loading...</div>
+
+        <div class="users-list" *ngIf="!isLoadingModal">
+          <div class="user-item" *ngFor="let user of modalUsers">
+            <a [routerLink]="['/user', user.userName]" (click)="closeModal()">
+              <img
+                [src]="user.avatar || 'assets/default-avatar.png'"
+                alt="{{ user.name }}"
+                class="user-avatar"
+              />
+              <div class="user-info">
+                <h4>{{ user.name }}</h4>
+                <p class="username">&#64;{{ user.userName }}</p>
+              </div>
+            </a>
+          </div>
+
+          <div class="empty-state" *ngIf="modalUsers.length === 0">
+            <p>{{ modalEmptyMessage }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

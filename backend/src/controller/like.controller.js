@@ -20,7 +20,7 @@ export const likeBlogPost = AsyncHandler(async (req, res) => {
     userId: req.user._id,
     blogId: blog._id,
   });
-  const response = new ApiResponse(200, "Blog post liked successfully");
+  const response = new ApiResponse(200, null, "Blog post liked successfully");
   return res.status(response.statusCode).json(response);
 });
 
@@ -41,6 +41,6 @@ export const unlikedBlogPost = AsyncHandler(async (req, res) => {
     userId: req.user._id,
     blogId: blog._id,
   });
-  const response = new ApiResponse(200, "Blog post unliked successfully");
+  const response = new ApiResponse(200, null, "Blog post unliked successfully");
   return res.status(response.statusCode).json(response);
 });

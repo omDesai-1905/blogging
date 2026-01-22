@@ -1,0 +1,100 @@
+<div class="follow-requests-container">
+  <h2>Follow Requests</h2>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'received'"
+      (click)="switchTab('received')"
+    >
+      Received Requests
+      <span class="badge" *ngIf="pendingRequests.length > 0">{{
+        pendingRequests.length
+      }}</span>
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'sent'"
+      (click)="switchTab('sent')"
+    >
+      Sent Requests
+      <span class="badge" *ngIf="sentRequests.length > 0">{{
+        sentRequests.length
+      }}</span>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div class="alert alert-success" *ngIf="successMessage">
+    {{ successMessage }}
+  </div>
+  <div class="alert alert-error" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Loading -->
+  <div class="loading" *ngIf="loading">Loading...</div>
+
+  <!-- Received Requests -->
+  <div class="requests-list" *ngIf="!loading && activeTab === 'received'">
+    <div class="empty-state" *ngIf="pendingRequests.length === 0">
+      <p>No pending follow requests</p>
+    </div>
+
+    <div class="request-card" *ngFor="let request of pendingRequests">
+      <div class="user-info">
+        <img
+          [src]="request.follower.avatar || 'assets/default-avatar.png'"
+          alt="{{ request.follower.name }}"
+          class="avatar"
+        />
+        <div class="user-details">
+          <h3>{{ request.follower.name }}</h3>
+          <p class="username">&#64;{{ request.follower.userName }}</p>
+          <p class="request-time">{{ request.createdAt | date: "short" }}</p>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-accept" (click)="acceptRequest(request._id)">
+          Accept
+        </button>
+        <button class="btn btn-reject" (click)="rejectRequest(request._id)">
+          Reject
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sent Requests -->
+  <div class="requests-list" *ngIf="!loading && activeTab === 'sent'">
+    <div class="empty-state" *ngIf="sentRequests.length === 0">
+      <p>No pending sent requests</p>
+    </div>
+
+    <div class="request-card" *ngFor="let request of sentRequests">
+      <div class="user-info">
+        <img
+          [src]="request.following.avatar || 'assets/default-avatar.png'"
+          alt="{{ request.following.name }}"
+          class="avatar"
+        />
+        <div class="user-details">
+          <h3>{{ request.following.name }}</h3>
+          <p class="username">&#64;{{ request.following.userName }}</p>
+          <p class="request-time">
+            Sent {{ request.createdAt | date: "short" }}
+          </p>
+        </div>
+      </div>
+      <div class="actions">
+        <button
+          class="btn btn-cancel"
+          (click)="cancelRequest(request.following._id, request._id)"
+        >
+          Cancel Request
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

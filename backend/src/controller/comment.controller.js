@@ -29,7 +29,7 @@ export const createComment = AsyncHandler(async (req, res) => {
   const response = new ApiResponse(
     201,
     comment,
-    "Comment created successfully"
+    "Comment created successfully",
   );
   return res.status(response.statusCode).json(response);
 });
@@ -45,7 +45,7 @@ export const getAllComment = AsyncHandler(async (req, res) => {
     {
       $lookup: {
         from: "users",
-        localField: "user",
+        localField: "userId",
         foreignField: "_id",
         as: "user",
         pipeline: [
@@ -62,7 +62,7 @@ export const getAllComment = AsyncHandler(async (req, res) => {
     },
     {
       $addFields: {
-        author: { $first: "$author" },
+        author: { $first: "$user" },
       },
     },
     {

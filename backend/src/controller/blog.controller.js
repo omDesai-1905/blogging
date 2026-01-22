@@ -44,7 +44,7 @@ export const createBlogPost = AsyncHandler(async (req, res) => {
     imageUrl = cloudinaryResponse.secure_url;
     console.log(
       "Image uploaded to Cloudinary and local file removed:",
-      imageUrl
+      imageUrl,
     );
   } else {
     // If Cloudinary fails, use local file URL
@@ -132,6 +132,8 @@ export const updateBlogPost = AsyncHandler(async (req, res) => {
 });
 
 export const getAllBlogPosts = AsyncHandler(async (req, res) => {
+  const currentUserId = req.user?._id;
+
   const blog = await Blog.aggregate([
     {
       $lookup: {
@@ -147,6 +149,7 @@ export const getAllBlogPosts = AsyncHandler(async (req, res) => {
               _id: 1,
               name: 1,
               avatar: 1,
+              isPrivate: 1,
             },
           },
         ],
@@ -159,10 +162,40 @@ export const getAllBlogPosts = AsyncHandler(async (req, res) => {
         },
       },
     },
+    // Filter out posts from private accounts
+    {
+      $lookup: {
+        from: "follows",
+        let: { authorId: "$author._id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$following", "$$authorId"] },
+                  { $eq: ["$follower", currentUserId] },
+                ],
+              },
+            },
+          },
+        ],
+        as: "followStatus",
+      },
+    },
+    {
+      $match: {
+        $or: [
+          { "author.isPrivate": { $ne: true } }, // Public accounts
+          { userId: currentUserId }, // Own posts
+          { followStatus: { $ne: [] } }, // Following the author
+        ],
+      },
+    },
     {
       $project: {
         userId: 0,
         __v: 0,
+        followStatus: 0,
       },
     },
     {
@@ -248,8 +281,37 @@ export const getBlogPost = AsyncHandler(async (req, res) => {
 
   const response = new ApiResponse(
     200,
-    { ...blog[0], isLiked, likes: likes.length, comments: comments.length },
-    "Blog post retrieved successfully"
+    {
+      ...blog[0],
+      isLiked,
+      likesCount: likes.length,
+      commentsCount: comments.length,
+    },
+    "Blog post retrieved successfully",
+  );
+
+  return res.status(response.statusCode).json(response);
+});
+
+export const shareBlog = AsyncHandler(async (req, res) => {
+  const { blogId } = req.params;
+
+  const blog = await Blog.findById(blogId);
+  if (!blog) {
+    throw new ApiError(404, "Blog post not found");
+  }
+
+  // Generate a shareable link
+  const shareUrl = `${req.protocol}://${req.get("host")}/blog/${blogId}`;
+
+  const response = new ApiResponse(
+    200,
+    {
+      shareUrl,
+      title: blog.title,
+      slug: blog.slug,
+    },
+    "Share link generated successfully",
   );
 
   return res.status(response.statusCode).json(response);

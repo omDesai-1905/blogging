@@ -1,0 +1,96 @@
+<header class="header">
+  <div class="container">
+    <div class="header-content">
+      <div class="logo">
+        <a routerLink="/">
+          <h1>BlogHub</h1>
+        </a>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="search-container" *ngIf="currentUser">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search users..."
+          [(ngModel)]="searchQuery"
+          (input)="onSearchInput()"
+          (blur)="closeSearch()"
+        />
+        <div class="search-results" *ngIf="showSearchResults">
+          <div class="loading" *ngIf="isSearching">Searching...</div>
+          <div
+            class="result-item"
+            *ngFor="let user of searchResults"
+            (mousedown)="goToUserProfile(user.userName)"
+          >
+            <div class="result-info">
+              <strong>{{ user.name }}</strong>
+              <span class="username">{{ "@" + user.userName }}</span>
+            </div>
+          </div>
+          <div
+            class="no-results"
+            *ngIf="
+              !isSearching &&
+              searchResults.length === 0 &&
+              searchQuery.trim().length > 0
+            "
+          >
+            No users found
+          </div>
+        </div>
+      </div>
+
+      <nav class="nav" [class.active]="isMenuOpen">
+        <ul>
+          <li>
+            <a
+              routerLink="/"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              >Home</a
+            >
+          </li>
+
+          <ng-container *ngIf="currentUser; else notLoggedIn">
+            <li>
+              <a routerLink="/blog/create" routerLinkActive="active">Write</a>
+            </li>
+            <li>
+              <a routerLink="/follow-requests" routerLinkActive="active"
+                >Requests</a
+              >
+            </li>
+            <li class="user-menu">
+              <span class="user-name">{{ currentUser.name }}</span>
+              <div class="dropdown">
+                <a [routerLink]="['/user', currentUser.userName]">My Profile</a>
+                <a routerLink="/settings">Settings</a>
+                <a (click)="logout()" class="logout-btn">Logout</a>
+              </div>
+            </li>
+          </ng-container>
+
+          <ng-template #notLoggedIn>
+            <li><a routerLink="/login" routerLinkActive="active">Login</a></li>
+            <li>
+              <a
+                routerLink="/register"
+                routerLinkActive="active"
+                class="btn-register"
+                >Register</a
+              >
+            </li>
+          </ng-template>
+        </ul>
+      </nav>
+
+      <button class="menu-toggle" (click)="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>

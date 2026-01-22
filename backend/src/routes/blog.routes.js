@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer";
-import {upload} from "../middleware/multer.middleware.js";
+import { upload } from "../middleware/multer.middleware.js";
 import {
   verifyJWT,
   getLoggedInUserOrIgnore,
@@ -12,6 +12,7 @@ import {
   updateBlogPost,
   getAllBlogPosts,
   getBlogPost,
+  shareBlog,
 } from "../controller/blog.controller.js";
 
 import {
@@ -44,5 +45,7 @@ router
 router.route("/:blogId/like").post(verifyJWT, likeBlogPost);
 
 router.route("/:blogId/like").delete(verifyJWT, unlikedBlogPost);
+
+router.route("/:blogId/share").get(shareBlog);
 
 export default router;
