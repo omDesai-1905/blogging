@@ -1,0 +1,138 @@
+<div class="home-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        Welcome to Our <span class="highlight-primary">Blogging Platform</span>
+      </h1>
+      <p class="hero-subtitle">
+        Share your thoughts, stories, and ideas with the world. Join our
+        community of writers and readers.
+      </p>
+      <div class="hero-buttons">
+        <a
+          *ngIf="!isAuthenticated"
+          routerLink="/register"
+          class="btn btn-primary btn-large"
+        >
+          Get Started
+        </a>
+        <a
+          *ngIf="!isAuthenticated"
+          routerLink="/login"
+          class="btn btn-secondary btn-large"
+        >
+          Sign In
+        </a>
+        <a
+          *ngIf="isAuthenticated"
+          routerLink="/blog/create"
+          class="btn btn-primary btn-large"
+        >
+          Create New Post
+        </a>
+        <a routerLink="/blogs" class="btn btn-secondary btn-large">
+          Browse Blogs
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <h2 class="section-title">Why Choose Our Platform?</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">✍️</div>
+        <h3>Easy to Write</h3>
+        <p>
+          Simple and intuitive editor to create beautiful blog posts with images
+          and rich content.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌐</div>
+        <h3>Public Access</h3>
+        <p>
+          All blogs are publicly accessible. Share your content with everyone,
+          no restrictions.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💬</div>
+        <h3>Engage with Community</h3>
+        <p>
+          Like, comment, and follow other writers. Build your audience and
+          connect with readers.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>Discover Content</h3>
+        <p>
+          Browse through various categories and find content that interests you.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">👥</div>
+        <h3>Follow Writers</h3>
+        <p>
+          Follow your favorite authors and stay updated with their latest posts.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Track Engagement</h3>
+        <p>See how many people view, like, and comment on your posts.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics Section -->
+  <section class="stats-section">
+    <h2 class="section-title">Join Our Growing Community</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">1000+</div>
+        <div class="stat-label">Blog Posts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">500+</div>
+        <div class="stat-label">Writers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">10k+</div>
+        <div class="stat-label">Readers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">24/7</div>
+        <div class="stat-label">Access</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <h2>Ready to Start Your Blogging Journey?</h2>
+    <p>Join thousands of writers sharing their stories on our platform</p>
+    <div class="cta-buttons">
+      <a
+        *ngIf="!isAuthenticated"
+        routerLink="/register"
+        class="btn btn-primary btn-large"
+      >
+        Sign Up Now
+      </a>
+      <a
+        *ngIf="isAuthenticated"
+        routerLink="/blog/create"
+        class="btn btn-primary btn-large"
+      >
+        Write Your First Post
+      </a>
+      <a routerLink="/blogs" class="btn btn-outline btn-large">
+        Explore Blogs
+      </a>
+    </div>
+  </section>
+</div>

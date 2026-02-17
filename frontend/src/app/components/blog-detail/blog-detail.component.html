@@ -13,9 +13,15 @@
       <h1>{{ blog.title }}</h1>
 
       <div class="blog-meta">
-        <span class="author">By {{ blog.user?.name || blog.userEmail }}</span>
+        <span class="author" *ngIf="blog.user?.userName">
+          By
+          <a
+            [routerLink]="['/user', blog.user?.userName]"
+            class="author-link"
+            >{{ "@" + blog.user?.userName }}</a
+          >
+        </span>
         <span class="date">{{ formatDate(blog.createdAt) }}</span>
-        <span class="views">👁 {{ blog.visit }} views</span>
       </div>
 
       <div class="blog-actions" *ngIf="canEditBlog()">
@@ -73,7 +79,14 @@
       <div class="comments-list">
         <div class="comment" *ngFor="let comment of comments">
           <div class="comment-author">
-            {{ comment.user?.name || comment.userId }}
+            <a
+              *ngIf="comment.author?.userName"
+              [routerLink]="['/user', comment.author?.userName]"
+              class="author-link"
+            >
+              {{ comment.author?.userName }}
+            </a>
+            <span *ngIf="!comment.author?.userName">Anonymous</span>
           </div>
           <div class="comment-content">{{ comment.content }}</div>
           <div class="comment-date">{{ formatDate(comment.createdAt) }}</div>
@@ -87,6 +100,6 @@
   </div>
 
   <div class="back-link">
-    <a routerLink="/">← Back to all blogs</a>
+    <a routerLink="/blogs">← Back to all blogs</a>
   </div>
 </div>

@@ -56,6 +56,18 @@
   color: #666;
 }
 
+.author-link {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.author-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
 .blog-actions {
   margin-top: 20px;
   display: flex;
@@ -96,12 +108,18 @@
   margin: 30px 0;
   border-radius: 8px;
   overflow: hidden;
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .blog-image img {
   width: 100%;
   height: auto;
   display: block;
+  object-fit: contain;
+  max-height: 600px;
 }
 
 .blog-content {
@@ -243,7 +261,17 @@
   color: #333;
   margin-bottom: 8px;
 }
+.comment-author .author-link {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s;
+}
 
+.comment-author .author-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
 .comment-content {
   color: #555;
   line-height: 1.6;

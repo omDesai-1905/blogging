@@ -25,7 +25,6 @@ export const getUserProfile = AsyncHandler(async (req, res) => {
   });
 
   let isFollowing = false;
-  let followRequestStatus = null; // null, 'pending', 'accepted'
   let isFollowedByUser = false; // Does the profile user follow the logged-in user?
 
   if (req.user) {
@@ -37,14 +36,14 @@ export const getUserProfile = AsyncHandler(async (req, res) => {
     const followRelation = await Follow.findOne({
       follower: req.user._id,
       following: user._id,
+      status: "accepted",
     });
 
     console.log("Follow relation found:", followRelation);
 
     if (followRelation) {
-      followRequestStatus = followRelation.status;
-      isFollowing = followRelation.status === "accepted";
-      console.log("Follow status:", { followRequestStatus, isFollowing });
+      isFollowing = true;
+      console.log("Follow status:", { isFollowing });
     } else {
       console.log("No follow relation found");
     }
@@ -64,11 +63,9 @@ export const getUserProfile = AsyncHandler(async (req, res) => {
     name: user.name,
     userName: user.userName,
     avatar: user.avatar,
-    isPrivate: user.isPrivate,
     followers: followers.length,
     following: following.length,
     isFollowing,
-    followRequestStatus,
     isFollowedByUser, // Can show "Follows you" badge
     posts: posts.length,
   };
@@ -198,10 +195,9 @@ export const followUser = AsyncHandler(async (req, res) => {
   }
 
   // If user is private, create pending request; otherwise, auto-accept
-  const status = userToFollow.isPrivate ? "pending" : "accepted";
+  const status = "accepted";
 
   console.log("Creating follow with status:", status);
-  console.log("User isPrivate:", userToFollow.isPrivate);
   console.log("Follower:", req.user._id, "Following:", userId);
 
   const newFollow = await Follow.create({
@@ -212,9 +208,7 @@ export const followUser = AsyncHandler(async (req, res) => {
 
   console.log("Created follow:", JSON.stringify(newFollow, null, 2));
 
-  const message = userToFollow.isPrivate
-    ? "Follow request sent successfully"
-    : "User followed successfully";
+  const message = "User followed successfully";
 
   const response = new ApiResponse(200, { status }, message);
   return res.status(response.statusCode).json(response);
@@ -374,23 +368,6 @@ export const getMySentFollowRequests = AsyncHandler(async (req, res) => {
   return res.status(response.statusCode).json(response);
 });
 
-export const toggleAccountPrivacy = AsyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
-  if (!user) {
-    throw new ApiError(404, "User not found");
-  }
-
-  user.isPrivate = !user.isPrivate;
-  await user.save();
-
-  const response = new ApiResponse(
-    200,
-    { isPrivate: user.isPrivate },
-    `Account is now ${user.isPrivate ? "private" : "public"}`,
-  );
-  return res.status(response.statusCode).json(response);
-});
-
 export const getMyPosts = AsyncHandler(async (req, res) => {
   const posts = await Blog.aggregate([
     {
@@ -441,12 +418,29 @@ export const getMyPosts = AsyncHandler(async (req, res) => {
   return res.status(response.statusCode).json(response);
 });
 
-export const getMyLikedPosts = AsyncHandler(async (req, res) => {
-  const likedPosts = await Like.aggregate([
+// Get likes on my posts (who liked my posts)
+export const getLikesOnMyPosts = AsyncHandler(async (req, res) => {
+  // First, get all posts by the current user
+  const myPosts = await Blog.find({ userId: req.user._id }).select("_id");
+  const myPostIds = myPosts.map((post) => post._id);
+
+  // Then get all likes on those posts
+  const likes = await Like.aggregate([
     {
       $match: {
-        userId: req.user._id,
+        blogId: { $in: myPostIds },
       },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "userId",
+        foreignField: "_id",
+        as: "user",
+      },
+    },
+    {
+      $unwind: "$user",
     },
     {
       $lookup: {
@@ -460,86 +454,85 @@ export const getMyLikedPosts = AsyncHandler(async (req, res) => {
       $unwind: "$blog",
     },
     {
-      $lookup: {
-        from: "users",
-        localField: "blog.userId",
-        foreignField: "_id",
-        as: "author",
-      },
-    },
-    {
-      $unwind: "$author",
-    },
-    {
       $project: {
-        _id: "$blog._id",
-        title: "$blog.title",
-        slug: "$blog.slug",
-        image: "$blog.image",
-        category: "$blog.category",
-        createdAt: "$blog.createdAt",
-        likedAt: "$createdAt",
-        author: {
-          _id: "$author._id",
-          name: "$author.name",
-          userName: "$author.userName",
-        },
-      },
-    },
-    {
-      $sort: { likedAt: -1 },
-    },
-  ]);
-
-  const response = new ApiResponse(
-    200,
-    likedPosts,
-    "My liked posts fetched successfully",
-  );
-  return res.status(response.statusCode).json(response);
-});
-
-export const getMyComments = AsyncHandler(async (req, res) => {
-  const comments = await Comment.aggregate([
-    {
-      $match: {
-        userId: req.user._id,
-      },
-    },
-    {
-      $lookup: {
-        from: "blogs",
-        localField: "blogId",
-        foreignField: "_id",
-        as: "blog",
-      },
-    },
-    {
-      $unwind: "$blog",
-    },
-    {
-      $lookup: {
-        from: "users",
-        localField: "blog.userId",
-        foreignField: "_id",
-        as: "blogAuthor",
-      },
-    },
-    {
-      $unwind: "$blogAuthor",
-    },
-    {
-      $project: {
-        content: 1,
+        _id: 1,
         createdAt: 1,
+        user: {
+          _id: "$user._id",
+          name: "$user.name",
+          userName: "$user.userName",
+          avatar: "$user.avatar",
+        },
         blog: {
           _id: "$blog._id",
           title: "$blog.title",
           slug: "$blog.slug",
         },
-        blogAuthor: {
-          name: "$blogAuthor.name",
-          userName: "$blogAuthor.userName",
+      },
+    },
+    {
+      $sort: { createdAt: -1 },
+    },
+  ]);
+
+  const response = new ApiResponse(
+    200,
+    likes,
+    "Likes on my posts fetched successfully",
+  );
+  return res.status(response.statusCode).json(response);
+});
+
+// Get comments on my posts
+export const getCommentsOnMyPosts = AsyncHandler(async (req, res) => {
+  // First, get all posts by the current user
+  const myPosts = await Blog.find({ userId: req.user._id }).select("_id");
+  const myPostIds = myPosts.map((post) => post._id);
+
+  // Then get all comments on those posts
+  const comments = await Comment.aggregate([
+    {
+      $match: {
+        blogId: { $in: myPostIds },
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "userId",
+        foreignField: "_id",
+        as: "user",
+      },
+    },
+    {
+      $unwind: "$user",
+    },
+    {
+      $lookup: {
+        from: "blogs",
+        localField: "blogId",
+        foreignField: "_id",
+        as: "blog",
+      },
+    },
+    {
+      $unwind: "$blog",
+    },
+    {
+      $project: {
+        _id: 1,
+        content: 1,
+        createdAt: 1,
+        user: {
+          _id: "$user._id",
+          name: "$user.name",
+          userName: "$user.userName",
+          avatar: "$user.avatar",
+        },
+        blog: {
+          _id: "$blog._id",
+          title: "$blog.title",
+          slug: "$blog.slug",
         },
       },
     },
@@ -551,7 +544,7 @@ export const getMyComments = AsyncHandler(async (req, res) => {
   const response = new ApiResponse(
     200,
     comments,
-    "My comments fetched successfully",
+    "Comments on my posts fetched successfully",
   );
   return res.status(response.statusCode).json(response);
 });

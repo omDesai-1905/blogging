@@ -8,6 +8,7 @@ export interface Comment {
   createdAt: Date;
   updatedAt: Date;
   user?: User;
+  author?: User;
 }
 
 export interface CreateCommentRequest {

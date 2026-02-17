@@ -8,9 +8,6 @@
       <div class="profile-info">
         <div class="profile-name-section">
           <h1>{{ "@" + userName }}</h1>
-          <span class="private-badge" *ngIf="userProfile.isPrivate"
-            >🔒 Private Account</span
-          >
           <span
             class="follows-you-badge"
             *ngIf="userProfile.isFollowedByUser && !isOwnProfile()"
@@ -47,17 +44,35 @@
 
     <!-- User Posts -->
     <div class="user-posts">
-      <h2>Posts by {{ "@" + userName }}</h2>
-
-      <!-- Private Account - Not Following -->
-      <div class="private-account-message" *ngIf="isPrivateAndNotFollowing()">
-        <div class="lock-icon">🔒</div>
-        <h3>This Account is Private</h3>
-        <p>Follow this account to see their posts.</p>
+      <!-- Tabs (show all tabs if own profile, only Posts tab otherwise) -->
+      <div class="tabs">
+        <button
+          class="tab-btn"
+          [class.active]="activeTab === 'posts'"
+          (click)="switchTab('posts')"
+        >
+          Posts
+        </button>
+        <button
+          *ngIf="isOwnProfile()"
+          class="tab-btn"
+          [class.active]="activeTab === 'liked'"
+          (click)="switchTab('liked')"
+        >
+          Likes on My Posts
+        </button>
+        <button
+          *ngIf="isOwnProfile()"
+          class="tab-btn"
+          [class.active]="activeTab === 'comments'"
+          (click)="switchTab('comments')"
+        >
+          Comments on My Posts
+        </button>
       </div>
 
-      <!-- Can View Posts -->
-      <ng-container *ngIf="!isPrivateAndNotFollowing()">
+      <!-- Posts Tab Content -->
+      <ng-container *ngIf="activeTab === 'posts'">
         <div class="loading" *ngIf="isLoadingPosts">Loading posts...</div>
 
         <div class="posts-grid" *ngIf="!isLoadingPosts">
@@ -81,6 +96,83 @@
 
           <div class="empty-state" *ngIf="userPosts.length === 0">
             <p>No posts yet.</p>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Liked Posts Tab Content -->
+      <ng-container *ngIf="activeTab === 'liked'">
+        <div class="loading" *ngIf="isLoadingPosts">Loading likes...</div>
+
+        <div class="likes-list" *ngIf="!isLoadingPosts">
+          <div class="like-card" *ngFor="let like of likesOnPosts">
+            <div class="like-user-info">
+              <img
+                [src]="like.user?.avatar || 'assets/default-avatar.png'"
+                [alt]="like.user?.name"
+                class="user-avatar"
+              />
+              <div class="user-details">
+                <a [routerLink]="['/user', like.user?.userName]">
+                  <h4>{{ like.user?.name }}</h4>
+                  <p class="username">&#64;{{ like.user?.userName }}</p>
+                </a>
+              </div>
+            </div>
+            <div class="like-meta">
+              <span class="liked-post">
+                liked
+                <a [routerLink]="['/blog', like.blog?._id]">{{
+                  like.blog?.title
+                }}</a>
+              </span>
+              <span class="like-date">{{ formatDate(like.createdAt) }}</span>
+            </div>
+          </div>
+
+          <div class="empty-state" *ngIf="likesOnPosts.length === 0">
+            <p>No likes on your posts yet.</p>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Comments Tab Content -->
+      <ng-container *ngIf="activeTab === 'comments'">
+        <div class="loading" *ngIf="isLoadingPosts">Loading comments...</div>
+
+        <div class="comments-list" *ngIf="!isLoadingPosts">
+          <div class="comment-card" *ngFor="let comment of commentsOnPosts">
+            <div class="comment-user-info">
+              <img
+                [src]="comment.user?.avatar || 'assets/default-avatar.png'"
+                [alt]="comment.user?.name"
+                class="user-avatar"
+              />
+              <div class="user-details">
+                <a [routerLink]="['/user', comment.user?.userName]">
+                  <h4>{{ comment.user?.name }}</h4>
+                  <p class="username">&#64;{{ comment.user?.userName }}</p>
+                </a>
+              </div>
+            </div>
+            <div class="comment-content">
+              <p class="comment-text">{{ comment.content }}</p>
+              <div class="comment-meta">
+                <span class="comment-post">
+                  On:
+                  <a [routerLink]="['/blog', comment.blog?._id]">{{
+                    comment.blog?.title
+                  }}</a>
+                </span>
+                <span class="comment-date">{{
+                  formatDate(comment.createdAt)
+                }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-state" *ngIf="commentsOnPosts.length === 0">
+            <p>No comments on your posts yet.</p>
           </div>
         </div>
       </ng-container>

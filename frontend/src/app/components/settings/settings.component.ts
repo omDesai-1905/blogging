@@ -16,33 +16,36 @@ interface MyPost {
   commentsCount?: number;
 }
 
-interface LikedPost {
+interface LikeOnPost {
   _id: string;
-  title: string;
-  slug: string;
-  image: string;
-  category: string;
   createdAt: Date;
-  likedAt: Date;
-  author: {
+  user: {
     _id: string;
     name: string;
     userName: string;
+    avatar?: string;
   };
-}
-
-interface MyComment {
-  _id: string;
-  content: string;
-  createdAt: Date;
   blog: {
     _id: string;
     title: string;
     slug: string;
   };
-  blogAuthor: {
+}
+
+interface CommentOnPost {
+  _id: string;
+  content: string;
+  createdAt: Date;
+  user: {
+    _id: string;
     name: string;
     userName: string;
+    avatar?: string;
+  };
+  blog: {
+    _id: string;
+    title: string;
+    slug: string;
   };
 }
 
@@ -62,15 +65,11 @@ interface FollowerUser {
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
-  isPrivate = false;
-  isUpdating = false;
-  message = '';
-  
-  activeTab: 'privacy' | 'posts' | 'likes' | 'comments' = 'privacy';
+  activeTab: 'posts' | 'likes' | 'comments' = 'posts';
   
   myPosts: MyPost[] = [];
-  myLikedPosts: LikedPost[] = [];
-  myComments: MyComment[] = [];
+  likesOnMyPosts: LikeOnPost[] = [];
+  commentsOnMyPosts: CommentOnPost[] = [];
   
   isLoadingPosts = false;
   isLoadingLikes = false;
@@ -82,22 +81,18 @@ export class SettingsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const currentUser = this.authService.currentUserValue;
-    if (currentUser) {
-      this.isPrivate = currentUser.isPrivate || false;
-    }
     this.loadMyPosts();
   }
 
-  setActiveTab(tab: 'privacy' | 'posts' | 'likes' | 'comments'): void {
+  setActiveTab(tab: 'posts' | 'likes' | 'comments'): void {
     this.activeTab = tab;
     
     if (tab === 'posts' && this.myPosts.length === 0) {
       this.loadMyPosts();
-    } else if (tab === 'likes' && this.myLikedPosts.length === 0) {
-      this.loadMyLikedPosts();
-    } else if (tab === 'comments' && this.myComments.length === 0) {
-      this.loadMyComments();
+    } else if (tab === 'likes' && this.likesOnMyPosts.length === 0) {
+      this.loadLikesOnMyPosts();
+    } else if (tab === 'comments' && this.commentsOnMyPosts.length === 0) {
+      this.loadCommentsOnMyPosts();
     }
   }
 
@@ -117,60 +112,34 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  loadMyLikedPosts(): void {
+  loadLikesOnMyPosts(): void {
     this.isLoadingLikes = true;
-    this.userService.getMyLikedPosts().subscribe({
-      next: (response) => {
+    this.userService.getLikesOnMyPosts().subscribe({
+      next: (response: any) => {
         if (response.success && response.data) {
-          this.myLikedPosts = response.data;
+          this.likesOnMyPosts = response.data;
         }
         this.isLoadingLikes = false;
       },
-      error: (error) => {
-        console.error('Failed to load liked posts', error);
+      error: (error: any) => {
+        console.error('Failed to load likes on posts', error);
         this.isLoadingLikes = false;
       }
     });
   }
 
-  loadMyComments(): void {
+  loadCommentsOnMyPosts(): void {
     this.isLoadingComments = true;
-    this.userService.getMyComments().subscribe({
-      next: (response) => {
+    this.userService.getCommentsOnMyPosts().subscribe({
+      next: (response: any) => {
         if (response.success && response.data) {
-          this.myComments = response.data;
+          this.commentsOnMyPosts = response.data;
         }
         this.isLoadingComments = false;
       },
-      error: (error) => {
-        console.error('Failed to load comments', error);
+      error: (error: any) => {
+        console.error('Failed to load comments on posts', error);
         this.isLoadingComments = false;
-      }
-    });
-  }
-
-  togglePrivacy(): void {
-    this.isUpdating = true;
-    this.message = '';
-
-    this.userService.toggleAccountPrivacy().subscribe({
-      next: (response) => {
-        if (response.success && response.data) {
-          this.isPrivate = response.data.isPrivate;
-          this.message = response.message || 'Privacy settings updated successfully';
-          
-          // Update current user in auth service
-          const currentUser = this.authService.currentUserValue;
-          if (currentUser) {
-            currentUser.isPrivate = this.isPrivate;
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-          }
-        }
-        this.isUpdating = false;
-      },
-      error: (error) => {
-        this.message = error.error?.message || 'Failed to update privacy settings';
-        this.isUpdating = false;
       }
     });
   }

@@ -30,40 +30,16 @@ export class UserService {
     return this.http.delete<ApiResponse>(`${this.apiUrl}/${userId}/unfollow`);
   }
 
-  cancelFollowRequest(userId: string): Observable<ApiResponse> {
-    return this.http.delete<ApiResponse>(`${this.apiUrl}/${userId}/follow-request/cancel`);
-  }
-
-  acceptFollowRequest(requestId: string): Observable<ApiResponse> {
-    return this.http.post<ApiResponse>(`${this.apiUrl}/follow-requests/${requestId}/accept`, {});
-  }
-
-  rejectFollowRequest(requestId: string): Observable<ApiResponse> {
-    return this.http.delete<ApiResponse>(`${this.apiUrl}/follow-requests/${requestId}/reject`);
-  }
-
-  getPendingFollowRequests(): Observable<ApiResponse<FollowRequest[]>> {
-    return this.http.get<ApiResponse<FollowRequest[]>>(`${this.apiUrl}/follow-requests/pending`);
-  }
-
-  getMySentFollowRequests(): Observable<ApiResponse<FollowRequest[]>> {
-    return this.http.get<ApiResponse<FollowRequest[]>>(`${this.apiUrl}/follow-requests/sent`);
-  }
-
-  toggleAccountPrivacy(): Observable<ApiResponse<{ isPrivate: boolean }>> {
-    return this.http.post<ApiResponse<{ isPrivate: boolean }>>(`${this.apiUrl}/account/privacy`, {});
-  }
-
   getMyPosts(): Observable<ApiResponse<Blog[]>> {
     return this.http.get<ApiResponse<Blog[]>>(`${this.apiUrl}/my/posts`);
   }
 
-  getMyLikedPosts(): Observable<ApiResponse<any[]>> {
-    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/my/liked-posts`);
+  getLikesOnMyPosts(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/my/posts/likes`);
   }
 
-  getMyComments(): Observable<ApiResponse<any[]>> {
-    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/my/comments`);
+  getCommentsOnMyPosts(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/my/posts/comments`);
   }
 
   getMyFollowers(): Observable<ApiResponse<any[]>> {

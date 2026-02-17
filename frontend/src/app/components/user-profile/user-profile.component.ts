@@ -11,11 +11,9 @@ interface UserProfile {
   name: string;
   userName: string;
   avatar?: string;
-  isPrivate?: boolean;
   followers: number;
   following: number;
   isFollowing: boolean;
-  followRequestStatus?: 'pending' | 'accepted' | null;
   isFollowedByUser?: boolean;
   posts: number;
 }
@@ -31,12 +29,15 @@ export class UserProfileComponent implements OnInit {
   userName: string = '';
   userProfile: UserProfile | null = null;
   userPosts: Blog[] = [];
+  likesOnPosts: any[] = [];
+  commentsOnPosts: any[] = [];
   isLoading = false;
   isLoadingPosts = false;
   errorMessage = '';
   isAuthenticated = false;
   currentUserId = '';
   isTogglingFollow = false;
+  activeTab: 'posts' | 'liked' | 'comments' = 'posts';
   
   // Modal related properties
   showModal = false;
@@ -75,9 +76,7 @@ export class UserProfileComponent implements OnInit {
         if (response.success && response.data) {
           this.userProfile = response.data as any as UserProfile;
           console.log('User profile state:', {
-            isFollowing: this.userProfile.isFollowing,
-            followRequestStatus: this.userProfile.followRequestStatus,
-            isPrivate: this.userProfile.isPrivate
+            isFollowing: this.userProfile.isFollowing
           });
         }
         this.isLoading = false;
@@ -110,6 +109,58 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
+  loadLikesOnPosts(): void {
+    if (!this.isOwnProfile()) {
+      return;
+    }
+    
+    this.isLoadingPosts = true;
+    this.userService.getLikesOnMyPosts().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.likesOnPosts = response.data;
+        }
+        this.isLoadingPosts = false;
+      },
+      error: (error) => {
+        console.error('Failed to load likes on posts', error);
+        this.isLoadingPosts = false;
+      }
+    });
+  }
+
+  loadCommentsOnPosts(): void {
+    if (!this.isOwnProfile()) {
+      return;
+    }
+    
+    this.isLoadingPosts = true;
+    this.userService.getCommentsOnMyPosts().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.commentsOnPosts = response.data;
+        }
+        this.isLoadingPosts = false;
+      },
+      error: (error) => {
+        console.error('Failed to load comments on posts', error);
+        this.isLoadingPosts = false;
+      }
+    });
+  }
+
+  switchTab(tab: 'posts' | 'liked' | 'comments'): void {
+    this.activeTab = tab;
+    
+    if (tab === 'posts' && this.userPosts.length === 0) {
+      this.loadUserPosts();
+    } else if (tab === 'liked' && this.likesOnPosts.length === 0) {
+      this.loadLikesOnPosts();
+    } else if (tab === 'comments' && this.commentsOnPosts.length === 0) {
+      this.loadCommentsOnPosts();
+    }
+  }
+
   toggleFollow(): void {
     console.log('=== FOLLOW BUTTON CLICKED ===');
     console.log('isAuthenticated:', this.isAuthenticated);
@@ -137,11 +188,10 @@ export class UserProfileComponent implements OnInit {
     
     console.log('Profile User ID:', profileUserId);
     console.log('Current Follow Status:', {
-      isFollowing: this.userProfile.isFollowing,
-      followRequestStatus: this.userProfile.followRequestStatus
+      isFollowing: this.userProfile.isFollowing
     });
 
-    // If already following (status = accepted), unfollow
+    // If already following, unfollow
     if (this.userProfile.isFollowing) {
       console.log('ACTION: Unfollowing user...');
       this.userService.unfollowUser(profileUserId).subscribe({
@@ -157,25 +207,9 @@ export class UserProfileComponent implements OnInit {
         }
       });
     } 
-    // If request is pending, cancel it
-    else if (this.userProfile.followRequestStatus === 'pending') {
-      console.log('ACTION: Canceling pending request...');
-      this.userService.cancelFollowRequest(profileUserId).subscribe({
-        next: (response) => {
-          console.log('Cancel request SUCCESS:', response);
-          this.loadUserProfile();
-          this.isTogglingFollow = false;
-        },
-        error: (error) => {
-          console.error('Cancel request ERROR:', error);
-          alert('Failed to cancel request: ' + (error.error?.message || error.message));
-          this.isTogglingFollow = false;
-        }
-      });
-    }
-    // Otherwise, send follow request (will be pending if private, accepted if public)
+    // Otherwise, follow the user
     else {
-      console.log('ACTION: Sending follow request...');
+      console.log('ACTION: Following user...');
       this.userService.followUser(profileUserId).subscribe({
         next: (response) => {
           console.log('Follow SUCCESS:', response);
@@ -206,35 +240,13 @@ export class UserProfileComponent implements OnInit {
   getFollowButtonText(): string {
     if (!this.userProfile) return 'Follow';
     
-    if (this.userProfile.isFollowing) {
-      return 'Unfollow';
-    } else if (this.userProfile.followRequestStatus === 'pending') {
-      return 'Requested';
-    } else {
-      return 'Follow';
-    }
+    return this.userProfile.isFollowing ? 'Unfollow' : 'Follow';
   }
 
   getFollowButtonClass(): string {
     if (!this.userProfile) return 'btn-primary';
     
-    if (this.userProfile.isFollowing) {
-      return 'btn-secondary';
-    } else if (this.userProfile.followRequestStatus === 'pending') {
-      return 'btn-warning';
-    } else {
-      return 'btn-primary';
-    }
-  }
-
-  isPrivateAndNotFollowing(): boolean {
-    if (!this.userProfile) return false;
-    
-    // If it's the user's own profile, always show posts
-    if (this.isOwnProfile()) return false;
-    
-    // If the account is private and user is not following (accepted status), hide posts
-    return this.userProfile.isPrivate === true && !this.userProfile.isFollowing;
+    return this.userProfile.isFollowing ? 'btn-secondary' : 'btn-primary';
   }
 
   truncateContent(content: string, maxLength: number): string {

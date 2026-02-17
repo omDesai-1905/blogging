@@ -5,13 +5,6 @@
   <div class="tabs">
     <button
       class="tab-button"
-      [class.active]="activeTab === 'privacy'"
-      (click)="setActiveTab('privacy')"
-    >
-      Privacy
-    </button>
-    <button
-      class="tab-button"
       [class.active]="activeTab === 'posts'"
       (click)="setActiveTab('posts')"
     >
@@ -22,45 +15,15 @@
       [class.active]="activeTab === 'likes'"
       (click)="setActiveTab('likes')"
     >
-      Liked Posts ({{ myLikedPosts.length }})
+      Likes on My Posts ({{ likesOnMyPosts.length }})
     </button>
     <button
       class="tab-button"
       [class.active]="activeTab === 'comments'"
       (click)="setActiveTab('comments')"
     >
-      My Comments ({{ myComments.length }})
+      Comments on My Posts ({{ commentsOnMyPosts.length }})
     </button>
-  </div>
-
-  <!-- Privacy Tab -->
-  <div class="settings-section" *ngIf="activeTab === 'privacy'">
-    <h3>Privacy</h3>
-    <div class="privacy-toggle">
-      <label>
-        <input
-          type="checkbox"
-          [checked]="isPrivate"
-          (change)="togglePrivacy()"
-          [disabled]="isUpdating"
-        />
-        <span>Private Account</span>
-      </label>
-      <p class="privacy-description">
-        {{
-          isPrivate
-            ? "Your account is private. Only followers can see your posts."
-            : "Your account is public. Anyone can see your posts."
-        }}
-      </p>
-    </div>
-    <div
-      class="message"
-      *ngIf="message"
-      [class.success]="!message.includes('Failed')"
-    >
-      {{ message }}
-    </div>
   </div>
 
   <!-- My Posts Tab -->
@@ -98,58 +61,71 @@
 
   <!-- Liked Posts Tab -->
   <div class="settings-section" *ngIf="activeTab === 'likes'">
-    <h3>Posts I've Liked</h3>
-    <div class="loading" *ngIf="isLoadingLikes">Loading liked posts...</div>
+    <h3>Likes on My Posts</h3>
+    <div class="loading" *ngIf="isLoadingLikes">Loading likes...</div>
 
-    <div class="posts-list" *ngIf="!isLoadingLikes">
-      <div class="post-card" *ngFor="let post of myLikedPosts">
-        <div class="post-image" *ngIf="post.image">
-          <img [src]="post.image" [alt]="post.title" />
+    <div class="likes-list" *ngIf="!isLoadingLikes">
+      <div class="like-card" *ngFor="let like of likesOnMyPosts">
+        <div class="like-user-info">
+          <img
+            [src]="like.user?.avatar || 'assets/default-avatar.png'"
+            [alt]="like.user?.name"
+            class="user-avatar"
+          />
+          <div class="user-details">
+            <a [routerLink]="['/user', like.user?.userName]">
+              <h4>{{ like.user?.name }}</h4>
+              <p class="username">&#64;{{ like.user?.userName }}</p>
+            </a>
+          </div>
         </div>
-        <div class="post-content">
-          <span class="post-category">{{ post.category }}</span>
-          <h4>
-            <a [routerLink]="['/blog', post._id]">{{ post.title }}</a>
-          </h4>
-          <div class="post-author">
-            By
-            <a [routerLink]="['/user', post.author.userName]">{{
-              post.author.name
+        <div class="like-meta">
+          <span class="liked-post">
+            liked your post:
+            <a [routerLink]="['/blog', like.blog?._id]">{{
+              like.blog?.title
             }}</a>
-          </div>
-          <div class="post-stats">
-            <span class="stat">❤️ Liked on {{ formatDate(post.likedAt) }}</span>
-            <span class="stat"
-              >📅 Posted on {{ formatDate(post.createdAt) }}</span
-            >
-          </div>
+          </span>
+          <span class="like-date">{{ formatDate(like.createdAt) }}</span>
         </div>
       </div>
 
-      <div class="empty-state" *ngIf="myLikedPosts.length === 0">
-        <p>You haven't liked any posts yet.</p>
-        <a routerLink="/" class="btn btn-primary">Browse Posts</a>
+      <div class="empty-state" *ngIf="likesOnMyPosts.length === 0">
+        <p>No one has liked your posts yet.</p>
+        <a routerLink="/blog/create" class="btn btn-primary">Create a Post</a>
       </div>
     </div>
   </div>
 
   <!-- My Comments Tab -->
   <div class="settings-section" *ngIf="activeTab === 'comments'">
-    <h3>My Comments</h3>
+    <h3>Comments on My Posts</h3>
     <div class="loading" *ngIf="isLoadingComments">Loading comments...</div>
 
     <div class="comments-list" *ngIf="!isLoadingComments">
-      <div class="comment-card" *ngFor="let comment of myComments">
+      <div class="comment-card" *ngFor="let comment of commentsOnMyPosts">
+        <div class="comment-user-info">
+          <img
+            [src]="comment.user?.avatar || 'assets/default-avatar.png'"
+            [alt]="comment.user?.name"
+            class="user-avatar"
+          />
+          <div class="user-details">
+            <a [routerLink]="['/user', comment.user?.userName]">
+              <h4>{{ comment.user?.name }}</h4>
+              <p class="username">&#64;{{ comment.user?.userName }}</p>
+            </a>
+          </div>
+        </div>
         <div class="comment-content">
           <p class="comment-text">{{ comment.content }}</p>
           <div class="comment-meta">
-            <span
-              >On post:
-              <a [routerLink]="['/blog', comment.blog._id]">{{
-                comment.blog.title
-              }}</a></span
-            >
-            <span>by {{ comment.blogAuthor.name }}</span>
+            <span class="comment-post">
+              On your post:
+              <a [routerLink]="['/blog', comment.blog?._id]">{{
+                comment.blog?.title
+              }}</a>
+            </span>
             <span class="comment-date">{{
               formatDate(comment.createdAt)
             }}</span>
@@ -157,9 +133,9 @@
         </div>
       </div>
 
-      <div class="empty-state" *ngIf="myComments.length === 0">
-        <p>You haven't made any comments yet.</p>
-        <a routerLink="/" class="btn btn-primary">Browse Posts</a>
+      <div class="empty-state" *ngIf="commentsOnMyPosts.length === 0">
+        <p>No one has commented on your posts yet.</p>
+        <a routerLink="/blog/create" class="btn btn-primary">Create a Post</a>
       </div>
     </div>
   </div>

@@ -149,53 +149,65 @@ export const getAllBlogPosts = AsyncHandler(async (req, res) => {
               _id: 1,
               name: 1,
               avatar: 1,
-              isPrivate: 1,
             },
           },
         ],
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "blogId",
+        as: "likes",
+      },
+    },
+    {
+      $lookup: {
+        from: "comments",
+        localField: "_id",
+        foreignField: "blogId",
+        as: "comments",
       },
     },
     {
       $addFields: {
-        author: {
+        user: {
           $first: "$author",
         },
-      },
-    },
-    // Filter out posts from private accounts
-    {
-      $lookup: {
-        from: "follows",
-        let: { authorId: "$author._id" },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  { $eq: ["$following", "$$authorId"] },
-                  { $eq: ["$follower", currentUserId] },
-                ],
-              },
+        likesCount: {
+          $size: "$likes",
+        },
+        commentsCount: {
+          $size: "$comments",
+        },
+        isLiked: {
+          $cond: {
+            if: { $eq: [currentUserId, null] },
+            then: false,
+            else: {
+              $in: [
+                currentUserId,
+                {
+                  $map: {
+                    input: "$likes",
+                    as: "like",
+                    in: "$$like.userId",
+                  },
+                },
+              ],
             },
           },
-        ],
-        as: "followStatus",
-      },
-    },
-    {
-      $match: {
-        $or: [
-          { "author.isPrivate": { $ne: true } }, // Public accounts
-          { userId: currentUserId }, // Own posts
-          { followStatus: { $ne: [] } }, // Following the author
-        ],
+        },
       },
     },
     {
       $project: {
         userId: 0,
         __v: 0,
-        followStatus: 0,
+        likes: 0,
+        comments: 0,
+        author: 0,
       },
     },
     {
@@ -244,7 +256,7 @@ export const getBlogPost = AsyncHandler(async (req, res) => {
     },
     {
       $addFields: {
-        author: {
+        user: {
           $first: "$author",
         },
       },
@@ -253,6 +265,7 @@ export const getBlogPost = AsyncHandler(async (req, res) => {
       $project: {
         userId: 0,
         __v: 0,
+        author: 0,
       },
     },
   ]);

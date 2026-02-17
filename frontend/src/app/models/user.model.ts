@@ -5,11 +5,9 @@ export interface User {
   email: string;
   gender?: 'MALE' | 'FEMALE' | 'OTHER';
   avatar?: string;
-  isPrivate?: boolean;
   followers?: number;
   following?: number;
   isFollowing?: boolean;
-  followRequestStatus?: 'pending' | 'accepted' | null;
   isFollowedByUser?: boolean;
   posts?: number;
   createdAt?: Date;

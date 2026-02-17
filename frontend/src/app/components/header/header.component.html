@@ -8,36 +8,86 @@
       </div>
 
       <!-- Search Bar -->
-      <div class="search-container" *ngIf="currentUser">
+      <div class="search-container">
+        <svg
+          class="search-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
         <input
           type="text"
           class="search-input"
-          placeholder="Search users..."
+          placeholder="Search blogs and users..."
           [(ngModel)]="searchQuery"
           (input)="onSearchInput()"
+          (keyup.enter)="navigateToSearch()"
           (blur)="closeSearch()"
         />
+
+        <!-- Search Suggestions Dropdown -->
         <div class="search-results" *ngIf="showSearchResults">
           <div class="loading" *ngIf="isSearching">Searching...</div>
+
           <div
             class="result-item"
-            *ngFor="let user of searchResults"
-            (mousedown)="goToUserProfile(user.userName)"
+            *ngFor="let result of searchResults"
+            (mousedown)="selectResult(result)"
           >
+            <div class="result-icon">
+              <svg
+                *ngIf="result.type === 'user'"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <svg
+                *ngIf="result.type === 'blog'"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                ></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+              </svg>
+            </div>
             <div class="result-info">
-              <strong>{{ user.name }}</strong>
-              <span class="username">{{ "@" + user.userName }}</span>
+              <strong>{{ result.title }}</strong>
+              <span class="subtitle">{{ result.subtitle }}</span>
             </div>
           </div>
+
           <div
             class="no-results"
-            *ngIf="
-              !isSearching &&
-              searchResults.length === 0 &&
-              searchQuery.trim().length > 0
-            "
+            *ngIf="!isSearching && searchResults.length === 0"
           >
-            No users found
+            No results found
           </div>
         </div>
       </div>
@@ -52,15 +102,13 @@
               >Home</a
             >
           </li>
+          <li>
+            <a routerLink="/blogs" routerLinkActive="active">Blogs</a>
+          </li>
 
           <ng-container *ngIf="currentUser; else notLoggedIn">
             <li>
               <a routerLink="/blog/create" routerLinkActive="active">Write</a>
-            </li>
-            <li>
-              <a routerLink="/follow-requests" routerLinkActive="active"
-                >Requests</a
-              >
             </li>
             <li class="user-menu">
               <span class="user-name">{{ currentUser.name }}</span>
