@@ -86,7 +86,7 @@
 .stat-number {
   font-size: 1.8rem;
   font-weight: bold;
-  color: #007bff;
+  color: #fb8c00;
 }
 
 .stat-label {
@@ -106,12 +106,12 @@
 }
 
 .btn-primary {
-  background-color: #007bff;
-  color: white;
+  background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 50%, #ffb74d 100%);
+  color: #333;
 }
 
 .btn-primary:hover {
-  background-color: #0056b3;
+  background: linear-gradient(135deg, #ffcc80 0%, #ffb74d 50%, #ffa726 100%);
 }
 
 .btn-secondary {
@@ -213,8 +213,8 @@
 .post-category {
   display: inline-block;
   padding: 0.25rem 0.75rem;
-  background-color: #007bff;
-  color: white;
+  background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 50%, #ffb74d 100%);
+  color: #333;
   border-radius: 12px;
   font-size: 0.75rem;
   text-transform: uppercase;
@@ -233,7 +233,7 @@
 }
 
 .post-content h3 a:hover {
-  color: #007bff;
+  color: #fb8c00;
 }
 
 .post-excerpt {
@@ -447,12 +447,12 @@
 }
 
 .tab-btn:hover {
-  color: #007bff;
+  color: #fb8c00;
 }
 
 .tab-btn.active {
-  color: #007bff;
-  border-bottom-color: #007bff;
+  color: #fb8c00;
+  border-bottom-color: #fb8c00;
 }
 
 /* Comments List Styles */
@@ -581,13 +581,13 @@
 }
 
 .like-meta a {
-  color: #007bff;
+  color: #fb8c00;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .like-meta a:hover {
-  color: #0056b3;
+  color: #f57c00;
   text-decoration: underline;
 }
 
@@ -616,13 +616,13 @@
 }
 
 .comment-meta a {
-  color: #007bff;
+  color: #fb8c00;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .comment-meta a:hover {
-  color: #0056b3;
+  color: #f57c00;
   text-decoration: underline;
 }
 
@@ -640,13 +640,13 @@
 }
 
 .post-author a {
-  color: #007bff;
+  color: #fb8c00;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .post-author a:hover {
-  color: #0056b3;
+  color: #f57c00;
   text-decoration: underline;
 }
 

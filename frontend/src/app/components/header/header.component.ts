@@ -148,6 +148,9 @@ export class HeaderComponent implements OnInit {
       },
       error: (error) => {
         console.error('Logout failed', error);
+        // Clear user data locally even if backend call fails
+        this.authService.logoutLocal();
+        this.router.navigate(['/login']);
       }
     });
   }

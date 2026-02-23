@@ -1,55 +1,74 @@
 <div class="login-container">
-  <div class="login-card">
-    <h2>Login to Your Account</h2>
-
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="userName">Username</label>
-        <input
-          type="text"
-          id="userName"
-          formControlName="userName"
-          placeholder="Enter your username"
-          class="form-control"
-        />
+  <div class="login-wrapper">
+    <!-- Left Section -->
+    <div class="left-section">
+      <div class="illustration">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="80" fill="rgba(255,255,255,0.1)" />
+          <rect
+            x="70"
+            y="60"
+            width="60"
+            height="80"
+            rx="5"
+            fill="rgba(255,255,255,0.9)"
+          />
+          <circle cx="100" cy="40" r="15" fill="rgba(255,255,255,0.9)" />
+          <path
+            d="M90 120 L90 160 M110 120 L110 160"
+            stroke="rgba(255,255,255,0.9)"
+            stroke-width="3"
+          />
+        </svg>
       </div>
-
-      <div class="or-divider">OR</div>
-
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          formControlName="email"
-          placeholder="Enter your email"
-          class="form-control"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          formControlName="password"
-          placeholder="Enter your password"
-          class="form-control"
-          required
-        />
-      </div>
-
-      <div class="error-message" *ngIf="errorMessage">
-        {{ errorMessage }}
-      </div>
-
-      <button type="submit" class="btn btn-primary" [disabled]="isLoading">
-        {{ isLoading ? "Logging in..." : "Login" }}
-      </button>
-
-      <p class="register-link">
-        Don't have an account? <a routerLink="/register">Register here</a>
+      <h1 class="welcome-title">WELCOME TO BLOGGING</h1>
+      <p class="welcome-subtitle">
+        Join our community that have more than 10000 subscribers and learn new
+        things
       </p>
-    </form>
+      <button class="sign-in-btn" routerLink="/register">SIGN UP</button>
+    </div>
+
+    <!-- Right Section -->
+    <div class="right-section">
+      <div class="login-label">LOGIN</div>
+      <div class="form-container">
+        <h2 class="form-title">BE ONE OF US!</h2>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="input-group">
+            <span class="input-icon">�</span>
+            <input
+              type="text"
+              formControlName="emailOrUsername"
+              placeholder="Username or Email"
+              class="input-field"
+            />
+          </div>
+
+          <div class="input-group">
+            <span class="input-icon">🔒</span>
+            <input
+              type="password"
+              formControlName="password"
+              placeholder="PASSWORD"
+              class="input-field"
+            />
+          </div>
+
+          <div class="error-message" *ngIf="errorMessage">
+            {{ errorMessage }}
+          </div>
+
+          <button type="submit" class="login-btn" [disabled]="isLoading">
+            {{ isLoading ? "LOGGING IN..." : "LOGIN" }}
+          </button>
+
+          <p class="bottom-link">
+            Don't have account? <a routerLink="/register">Sign up</a>
+          </p>
+        </form>
+      </div>
+    </div>
   </div>
 </div>

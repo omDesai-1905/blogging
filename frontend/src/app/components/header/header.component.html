@@ -3,7 +3,7 @@
     <div class="header-content">
       <div class="logo">
         <a routerLink="/">
-          <h1>BlogHub</h1>
+          <h1>BlogSphere</h1>
         </a>
       </div>
 
@@ -115,7 +115,12 @@
               <div class="dropdown">
                 <a [routerLink]="['/user', currentUser.userName]">My Profile</a>
                 <a routerLink="/settings">Settings</a>
-                <a (click)="logout()" class="logout-btn">Logout</a>
+                <a
+                  (click)="logout(); $event.preventDefault()"
+                  class="logout-btn"
+                  href="javascript:void(0)"
+                  >Logout</a
+                >
               </div>
             </li>
           </ng-container>

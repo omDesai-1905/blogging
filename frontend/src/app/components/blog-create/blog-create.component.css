@@ -46,7 +46,8 @@
 
 .form-control:focus {
   outline: none;
-  border-color: #007bff;
+  border-color: #ffcc80;
+  box-shadow: 0 0 0 3px rgba(255, 204, 128, 0.15);
 }
 
 textarea.form-control {
@@ -100,12 +101,12 @@ textarea.form-control {
 }
 
 .btn-primary {
-  background-color: #007bff;
-  color: white;
+  background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 50%, #ffb74d 100%);
+  color: #333;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: #0056b3;
+  background: linear-gradient(135deg, #ffcc80 0%, #ffb74d 50%, #ffa726 100%);
 }
 
 .btn-secondary {

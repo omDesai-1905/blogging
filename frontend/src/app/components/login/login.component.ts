@@ -24,27 +24,14 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      userName: [''],
-      email: [''],
+      emailOrUsername: ['', [Validators.required]],
       password: ['', [Validators.required]]
-    }, {
-      validators: this.atLeastOneValidator
     });
-  }
-
-  atLeastOneValidator(group: FormGroup): { [key: string]: boolean } | null {
-    const userName = group.get('userName')?.value;
-    const email = group.get('email')?.value;
-    
-    if (!userName && !email) {
-      return { atLeastOne: true };
-    }
-    return null;
   }
 
   onSubmit(): void {
     if (this.loginForm.invalid) {
-      this.errorMessage = 'Please enter either username or email, and password';
+      this.errorMessage = 'Please enter username/email and password';
       return;
     }
 
@@ -52,8 +39,7 @@ export class LoginComponent implements OnInit {
     this.errorMessage = '';
 
     const loginData = {
-      userName: this.loginForm.value.userName || undefined,
-      email: this.loginForm.value.email || undefined,
+      emailOrUsername: this.loginForm.value.emailOrUsername,
       password: this.loginForm.value.password
     };
 

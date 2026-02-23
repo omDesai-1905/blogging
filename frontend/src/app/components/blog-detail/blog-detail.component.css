@@ -32,8 +32,8 @@
 
 .blog-category {
   display: inline-block;
-  background-color: #007bff;
-  color: white;
+  background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 50%, #ffb74d 100%);
+  color: #333;
   padding: 6px 16px;
   border-radius: 20px;
   font-size: 12px;
@@ -57,14 +57,14 @@
 }
 
 .author-link {
-  color: #007bff;
+  color: #fb8c00;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s;
 }
 
 .author-link:hover {
-  color: #0056b3;
+  color: #f57c00;
   text-decoration: underline;
 }
 
@@ -152,7 +152,7 @@
 
 .like-btn:hover {
   background-color: #fff0f3;
-  border-color: #ffb3c1;
+  border-color: #db9872;
   transform: scale(1.05);
 }
 
@@ -210,16 +210,17 @@
 
 .comment-form textarea:focus {
   outline: none;
-  border-color: #007bff;
+  border-color: #ffcc80;
+  box-shadow: 0 0 0 3px rgba(255, 204, 128, 0.15);
 }
 
 .btn-primary {
-  background-color: #007bff;
-  color: white;
+  background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 50%, #ffb74d 100%);
+  color: #333;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: #0056b3;
+  background: linear-gradient(135deg, #ffcc80 0%, #ffb74d 50%, #ffa726 100%);
 }
 
 .btn:disabled {
@@ -236,7 +237,7 @@
 }
 
 .login-prompt a {
-  color: #007bff;
+  color: #fb8c00;
   text-decoration: none;
   font-weight: 500;
 }
@@ -262,14 +263,14 @@
   margin-bottom: 8px;
 }
 .comment-author .author-link {
-  color: #007bff;
+  color: #fb8c00;
   text-decoration: none;
   font-weight: bold;
   transition: color 0.3s;
 }
 
 .comment-author .author-link:hover {
-  color: #0056b3;
+  color: #f57c00;
   text-decoration: underline;
 }
 .comment-content {
@@ -294,7 +295,7 @@
 }
 
 .back-link a {
-  color: #007bff;
+  color: #fb8c00;
   text-decoration: none;
   font-size: 16px;
 }

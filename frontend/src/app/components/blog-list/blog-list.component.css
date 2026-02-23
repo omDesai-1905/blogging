@@ -42,9 +42,9 @@
 }
 
 .search-input:focus {
-  border-color: #007bff;
+  border-color: #ffcc80;
   background-color: #fff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(255, 204, 128, 0.15);
 }
 
 .clear-btn {
@@ -72,7 +72,7 @@
 .search-results-count {
   text-align: center;
   margin-top: 15px;
-  color: #007bff;
+  color: #fb8c00;
   font-weight: 500;
   font-size: 14px;
 }
@@ -106,14 +106,14 @@
 }
 
 .filter-tab:hover {
-  border-color: #007bff;
-  color: #007bff;
+  border-color: #ffcc80;
+  color: #fb8c00;
 }
 
 .filter-tab.active {
-  background-color: #007bff;
-  border-color: #007bff;
-  color: white;
+  background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 50%, #ffb74d 100%);
+  border-color: #ffb74d;
+  color: #333;
 }
 
 .search-summary {
@@ -155,15 +155,15 @@
 }
 
 .user-card:hover {
-  border-color: #007bff;
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+  border-color: #ffcc80;
+  box-shadow: 0 4px 12px rgba(255, 204, 128, 0.2);
   transform: translateY(-2px);
 }
 
 .user-avatar {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 50%, #ffb74d 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -172,7 +172,7 @@
 }
 
 .user-avatar svg {
-  color: white;
+  color: #333;
 }
 
 .user-info {
@@ -188,7 +188,7 @@
 }
 
 .user-info .username {
-  color: #007bff;
+  color: #fb8c00;
   font-size: 14px;
   margin: 4px 0;
   font-weight: 500;
@@ -225,12 +225,12 @@
 }
 
 .btn-primary {
-  background-color: #007bff;
-  color: white;
+  background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 50%, #ffb74d 100%);
+  color: #333;
 }
 
 .btn-primary:hover {
-  background-color: #0056b3;
+  background: linear-gradient(135deg, #ffcc80 0%, #ffb74d 50%, #ffa726 100%);
 }
 
 .loading {
@@ -289,8 +289,8 @@
 
 .blog-category {
   display: inline-block;
-  background-color: #007bff;
-  color: white;
+  background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 50%, #ffb74d 100%);
+  color: #333;
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 12px;
@@ -310,7 +310,7 @@
 }
 
 .blog-content h2 a:hover {
-  color: #007bff;
+  color: #fb8c00;
 }
 
 .blog-excerpt {
@@ -330,14 +330,14 @@
 }
 
 .author-link {
-  color: #007bff;
+  color: #fb8c00;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s;
 }
 
 .author-link:hover {
-  color: #0056b3;
+  color: #f57c00;
   text-decoration: underline;
 }
 
@@ -412,8 +412,8 @@
 
 .read-more-btn {
   padding: 8px 20px;
-  background-color: #007bff;
-  color: white;
+  background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 50%, #ffb74d 100%);
+  color: #333;
   text-decoration: none;
   border-radius: 25px;
   font-size: 14px;
@@ -422,7 +422,7 @@
 }
 
 .read-more-btn:hover {
-  background-color: #0056b3;
+  background: linear-gradient(135deg, #ffcc80 0%, #ffb74d 50%, #ffa726 100%);
   transform: translateX(5px);
 }
 

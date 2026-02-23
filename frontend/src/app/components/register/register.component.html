@@ -1,116 +1,142 @@
 <div class="register-container">
-  <div class="register-card">
-    <h2>Create Your Account</h2>
-
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="name">Full Name *</label>
-        <input
-          type="text"
-          id="name"
-          formControlName="name"
-          placeholder="Enter your full name"
-          class="form-control"
-        />
-        <div
-          class="error-text"
-          *ngIf="
-            registerForm.get('name')?.invalid &&
-            registerForm.get('name')?.touched
-          "
-        >
-          Name is required
-        </div>
+  <div class="register-wrapper">
+    <!-- Left Section -->
+    <div class="left-section">
+      <div class="illustration">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="80" fill="rgba(255,255,255,0.1)" />
+          <circle cx="100" cy="70" r="25" fill="rgba(255,255,255,0.9)" />
+          <path
+            d="M60 120 Q100 100 140 120 L140 160 Q100 180 60 160 Z"
+            fill="rgba(255,255,255,0.9)"
+          />
+          <circle cx="85" cy="65" r="5" fill="#ff9800" />
+          <circle cx="115" cy="65" r="5" fill="#ff9800" />
+        </svg>
       </div>
-
-      <div class="form-group">
-        <label for="userName">Username *</label>
-        <input
-          type="text"
-          id="userName"
-          formControlName="userName"
-          placeholder="Choose a username"
-          class="form-control"
-        />
-        <div
-          class="error-text"
-          *ngIf="
-            registerForm.get('userName')?.invalid &&
-            registerForm.get('userName')?.touched
-          "
-        >
-          Username is required
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="email">Email *</label>
-        <input
-          type="email"
-          id="email"
-          formControlName="email"
-          placeholder="Enter your email"
-          class="form-control"
-        />
-        <div
-          class="error-text"
-          *ngIf="
-            registerForm.get('email')?.invalid &&
-            registerForm.get('email')?.touched
-          "
-        >
-          Valid email is required
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="password">Password *</label>
-        <input
-          type="password"
-          id="password"
-          formControlName="password"
-          placeholder="Enter your password (min 7 characters)"
-          class="form-control"
-        />
-        <div
-          class="error-text"
-          *ngIf="
-            registerForm.get('password')?.invalid &&
-            registerForm.get('password')?.touched
-          "
-        >
-          Password must be at least 7 characters
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="confirmPassword">Confirm Password *</label>
-        <input
-          type="password"
-          id="confirmPassword"
-          formControlName="confirmPassword"
-          placeholder="Confirm your password"
-          class="form-control"
-        />
-        <div
-          class="error-text"
-          *ngIf="registerForm.errors?.['passwordMismatch'] && registerForm.get('confirmPassword')?.touched"
-        >
-          Passwords do not match
-        </div>
-      </div>
-
-      <div class="error-message" *ngIf="errorMessage">
-        {{ errorMessage }}
-      </div>
-
-      <button type="submit" class="btn btn-primary" [disabled]="isLoading">
-        {{ isLoading ? "Creating Account..." : "Register" }}
-      </button>
-
-      <p class="login-link">
-        Already have an account? <a routerLink="/login">Login here</a>
+      <h1 class="welcome-title">START YOUR JOURNEY!</h1>
+      <p class="welcome-subtitle">
+        Join our community of writers and readers. Share your stories with the
+        world
       </p>
-    </form>
+      <button class="sign-in-btn" routerLink="/login">SIGN IN</button>
+    </div>
+
+    <!-- Right Section -->
+    <div class="right-section">
+      <div class="register-label">REGISTER</div>
+      <div class="form-container">
+        <h2 class="form-title">CREATE ACCOUNT</h2>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+          <div class="input-group">
+            <span class="input-icon">👤</span>
+            <input
+              type="text"
+              formControlName="name"
+              placeholder="Full Name"
+              class="input-field"
+            />
+          </div>
+          <div
+            class="error-text"
+            *ngIf="
+              registerForm.get('name')?.invalid &&
+              registerForm.get('name')?.touched
+            "
+          >
+            Name is required
+          </div>
+
+          <div class="input-group">
+            <span class="input-icon">🎭</span>
+            <input
+              type="text"
+              formControlName="userName"
+              placeholder="Username"
+              class="input-field"
+            />
+          </div>
+          <div
+            class="error-text"
+            *ngIf="
+              registerForm.get('userName')?.invalid &&
+              registerForm.get('userName')?.touched
+            "
+          >
+            Username is required
+          </div>
+
+          <div class="input-group">
+            <span class="input-icon">📧</span>
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="Email Address"
+              class="input-field"
+            />
+          </div>
+          <div
+            class="error-text"
+            *ngIf="
+              registerForm.get('email')?.invalid &&
+              registerForm.get('email')?.touched
+            "
+          >
+            Valid email is required
+          </div>
+
+          <div class="input-group">
+            <span class="input-icon">🔒</span>
+            <input
+              type="password"
+              formControlName="password"
+              placeholder="Password (min 7 characters)"
+              class="input-field"
+            />
+          </div>
+          <div
+            class="error-text"
+            *ngIf="
+              registerForm.get('password')?.invalid &&
+              registerForm.get('password')?.touched
+            "
+          >
+            Password must be at least 7 characters
+          </div>
+
+          <div class="input-group">
+            <span class="input-icon">🔓</span>
+            <input
+              type="password"
+              formControlName="confirmPassword"
+              placeholder="Confirm Password"
+              class="input-field"
+            />
+          </div>
+          <div
+            class="error-text"
+            *ngIf="
+              registerForm.errors?.['passwordMismatch'] &&
+              registerForm.get('confirmPassword')?.touched
+            "
+          >
+            Passwords do not match
+          </div>
+
+          <div class="error-message" *ngIf="errorMessage">
+            {{ errorMessage }}
+          </div>
+
+          <button type="submit" class="register-btn" [disabled]="isLoading">
+            {{ isLoading ? "CREATING ACCOUNT..." : "REGISTER" }}
+          </button>
+
+          <p class="bottom-link">
+            Already have account? <a routerLink="/login">Sign in</a>
+          </p>
+        </form>
+      </div>
+    </div>
   </div>
 </div>

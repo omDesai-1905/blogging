@@ -63,7 +63,6 @@ export class AuthService {
     return this.http.post<ApiResponse>(`${this.apiUrl}/logout`, {}).pipe(
       tap(() => {
         this.clearCurrentUser();
-        this.router.navigate(['/login']);
       })
     );
   }

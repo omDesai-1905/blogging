@@ -26,7 +26,7 @@
 }
 
 .hero-title .highlight-primary {
-  color: #007bff;
+  color: #fb8c00;
 }
 
 .hero-subtitle {
@@ -121,7 +121,7 @@
   font-size: 48px;
   font-weight: bold;
   margin-bottom: 8px;
-  color: #007bff;
+  color: #fb8c00;
 }
 
 .stat-label {
@@ -176,16 +176,16 @@
 }
 
 .btn-primary {
-  background: #667eea;
-  color: white;
-  border-color: #667eea;
+  background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 50%, #ffb74d 100%);
+  color: #333;
+  border-color: #ffb74d;
 }
 
 .btn-primary:hover {
-  background: #5568d3;
-  border-color: #5568d3;
+  background: linear-gradient(135deg, #ffcc80 0%, #ffb74d 50%, #ffa726 100%);
+  border-color: #ffa726;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(255, 204, 128, 0.4);
 }
 
 .btn-secondary {
@@ -202,13 +202,13 @@
 
 .btn-outline {
   background: transparent;
-  color: #667eea;
-  border-color: #667eea;
+  color: #fb8c00;
+  border-color: #fb8c00;
 }
 
 .btn-outline:hover {
-  background: #667eea;
-  color: white;
+  background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 100%);
+  color: #333;
   transform: translateY(-2px);
 }
 
