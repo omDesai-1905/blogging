@@ -34,7 +34,7 @@ router
 router
   .route("/:blogId")
   .get(getLoggedInUserOrIgnore, getBlogPost)
-  .post(verifyJWT, updateBlogPost)
+  .post(verifyJWT, upload.single("image"), updateBlogPost)
   .delete(verifyJWT, deleteBlogPost);
 
 router

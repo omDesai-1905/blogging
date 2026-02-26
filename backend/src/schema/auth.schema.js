@@ -1,25 +1,27 @@
-import Yup from 'yup'
+import Yup from "yup";
 
 export const registerSchema = Yup.object().shape({
-    name: Yup.string().required(),
-    email: Yup.string().email().required(),
-    userName:  Yup.string().lowercase().required(),
-    password: Yup.string().min(7).required(),
+  name: Yup.string().required(),
+  email: Yup.string().email().required(),
+  userName: Yup.string().lowercase().required(),
+  password: Yup.string().min(7).required(),
 });
 
-export const loginSchema = Yup.object().shape({
+export const loginSchema = Yup.object()
+  .shape({
     userName: Yup.string(),
     email: Yup.string().email("Invalid email format"),
+    emailOrUsername: Yup.string(),
     password: Yup.string().required("Password is required"),
-})
-.test(
+  })
+  .test(
     "at-least one",
-    "Either userName or email required",
+    "Either userName, email, or emailOrUsername required",
 
     function (value) {
-        return value.userName || value.email;
-    }
-);
+      return value.userName || value.email || value.emailOrUsername;
+    },
+  );
 
 export const changePasswordSchema = Yup.object().shape({
   newPassword: Yup.string().min(7).required("new password is required."),

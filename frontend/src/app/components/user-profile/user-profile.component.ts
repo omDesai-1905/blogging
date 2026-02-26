@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
+import { BlogService } from '../../services/blog.service';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../models/user.model';
 import { Blog } from '../../models/blog.model';
@@ -48,7 +49,9 @@ export class UserProfileComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private userService: UserService,
+    private blogService: BlogService,
     private authService: AuthService
   ) {}
 
@@ -329,5 +332,31 @@ export class UserProfileComponent implements OnInit {
   closeModal(): void {
     this.showModal = false;
     this.modalUsers = [];
+  }
+
+  deleteBlog(blog: Blog): void {
+    if (!confirm(`Are you sure you want to delete "${blog.title}"?`)) {
+      return;
+    }
+
+    this.blogService.deleteBlog(blog._id).subscribe({
+      next: (response) => {
+        if (response.success) {
+          // Remove the blog from the local array
+          this.userPosts = this.userPosts.filter(p => p._id !== blog._id);
+          // Update the post count
+          if (this.userProfile) {
+            this.userProfile.posts = Math.max(0, this.userProfile.posts - 1);
+          }
+        }
+      },
+      error: (error) => {
+        alert('Failed to delete blog: ' + (error.error?.message || 'Unknown error'));
+      }
+    });
+  }
+
+  editBlog(blog: Blog): void {
+    this.router.navigate(['/blog/edit', blog._id]);
   }
 }

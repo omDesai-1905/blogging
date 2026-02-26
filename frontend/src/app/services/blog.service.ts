@@ -40,7 +40,25 @@ export class BlogService {
   }
 
   updateBlog(blogId: string, data: UpdateBlogRequest): Observable<BlogResponse> {
-    return this.http.post<BlogResponse>(`${this.apiUrl}/${blogId}`, data);
+    const formData = new FormData();
+    
+    if (data.title) {
+      formData.append('title', data.title);
+    }
+    if (data.content) {
+      formData.append('content', data.content);
+    }
+    if (data.slug) {
+      formData.append('slug', data.slug);
+    }
+    if (data.category) {
+      formData.append('category', data.category);
+    }
+    if (data.image) {
+      formData.append('image', data.image);
+    }
+
+    return this.http.post<BlogResponse>(`${this.apiUrl}/${blogId}`, formData);
   }
 
   deleteBlog(blogId: string): Observable<ApiResponse> {

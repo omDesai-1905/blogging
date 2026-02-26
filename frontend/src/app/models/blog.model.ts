@@ -32,6 +32,7 @@ export interface UpdateBlogRequest {
   content?: string;
   slug?: string;
   category?: string;
+  image?: File;
 }
 
 export interface BlogResponse {

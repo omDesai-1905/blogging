@@ -91,6 +91,23 @@
               <div class="post-meta">
                 <span class="post-date">{{ formatDate(post.createdAt) }}</span>
               </div>
+              <!-- Action buttons for own posts -->
+              <div class="post-actions" *ngIf="isOwnProfile()">
+                <button
+                  class="btn-edit"
+                  (click)="editBlog(post)"
+                  title="Edit blog"
+                >
+                  ✏️ Edit
+                </button>
+                <button
+                  class="btn-delete"
+                  (click)="deleteBlog(post)"
+                  title="Delete blog"
+                >
+                  🗑️ Delete
+                </button>
+              </div>
             </div>
           </div>
 

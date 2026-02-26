@@ -95,7 +95,7 @@ export const deleteBlogPost = AsyncHandler(async (req, res) => {
 
 export const updateBlogPost = AsyncHandler(async (req, res) => {
   const { blogId } = req.params;
-  const { title, content, slug } = req.body;
+  const { title, content, slug, category } = req.body;
   let blog;
   try {
     blog = await Blog.findById(blogId);
@@ -109,10 +109,18 @@ export const updateBlogPost = AsyncHandler(async (req, res) => {
     throw new ApiError(403, "You are not authorized to update this blog post");
   }
 
-  if (file) {
-    const cloudinaryResponse = await uploadOnCouldinary(file.path);
-    if (cloudinaryResponse) {
+  // Handle image upload if new image is provided
+  if (req.file) {
+    // Delete old image from Cloudinary
+    await deleteImage(blog.image);
+
+    // Upload new image to Cloudinary
+    const cloudinaryResponse = await uploadOnCouldinary(req.file.path);
+    if (cloudinaryResponse && cloudinaryResponse.secure_url) {
       blog.image = cloudinaryResponse.secure_url;
+    } else {
+      // Fallback to local file URL if Cloudinary fails
+      blog.image = `/images/${req.file.filename}`;
     }
   }
 
@@ -125,6 +133,7 @@ export const updateBlogPost = AsyncHandler(async (req, res) => {
   }
   if (title) blog.title = title;
   if (content) blog.content = content;
+  if (category) blog.category = category;
   await blog.save();
 
   const response = new ApiResponse(200, blog, "blog updated successfully");

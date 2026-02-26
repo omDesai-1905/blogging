@@ -43,7 +43,7 @@ export const registerUser = AsyncHandler(async (req, res) => {
     const response = new ApiResponse(
       201,
       { user: createdUser, accessToken },
-      "user Created Successfully"
+      "user Created Successfully",
     );
     return res.status(response.statusCode).json(response);
   } catch (error) {
@@ -56,11 +56,15 @@ export const registerUser = AsyncHandler(async (req, res) => {
 
 export const loginUser = AsyncHandler(async (req, res) => {
   try {
-    const { userName, email, password } = req.body;
-    await loginSchema.validate({ email, userName, password });
+    const { userName, email, emailOrUsername, password } = req.body;
+    await loginSchema.validate({ email, userName, emailOrUsername, password });
+
+    // If emailOrUsername is provided, use it for both email and userName search
+    const searchEmail = emailOrUsername || email;
+    const searchUserName = emailOrUsername || userName;
 
     const user = await User.findOne({
-      $or: [{ email }, { userName }],
+      $or: [{ email: searchEmail }, { userName: searchUserName }],
     });
     if (!user) {
       throw new ApiError(400, "Invalid Credentials");
@@ -79,7 +83,7 @@ export const loginUser = AsyncHandler(async (req, res) => {
     const response = new ApiResponse(
       200,
       { user: loggedInUser, accessToken },
-      "User Logged In Successfully"
+      "User Logged In Successfully",
     );
     return res.status(response.statusCode).json(response);
   } catch (error) {
@@ -191,7 +195,7 @@ export const changeAvatar = AsyncHandler(async (req, res) => {
   const response = new ApiResponse(
     200,
     { avatar: user.avatar },
-    "Avatar changed successfully"
+    "Avatar changed successfully",
   );
   return res.status(response.statusCode).json(response);
 });
