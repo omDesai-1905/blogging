@@ -175,28 +175,6 @@ export class BlogDetailComponent implements OnInit {
     });
   }
 
-  shareBlog(): void {
-    if (!this.blog) return;
-
-    this.blogService.shareBlog(this.blog._id).subscribe({
-      next: (response) => {
-        if (response.success && response.data) {
-          const shareUrl = response.data.shareUrl;
-          // Copy to clipboard
-          navigator.clipboard.writeText(shareUrl).then(() => {
-            alert('Share link copied to clipboard!');
-          }).catch(() => {
-            // Fallback: show the URL
-            prompt('Copy this link to share:', shareUrl);
-          });
-        }
-      },
-      error: (error) => {
-        alert('Failed to generate share link: ' + (error.error?.message || 'Unknown error'));
-      }
-    });
-  }
-
   editBlog(): void {
     if (!this.blog) return;
     this.router.navigate(['/blog/edit', this.blog._id]);

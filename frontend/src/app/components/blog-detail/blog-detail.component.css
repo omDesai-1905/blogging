@@ -138,8 +138,7 @@
   gap: 15px;
 }
 
-.like-btn,
-.share-btn {
+.like-btn {
   background-color: #f8f9fa;
   border: 2px solid #dee2e6;
   padding: 12px 24px;
@@ -156,12 +155,6 @@
   transform: scale(1.05);
 }
 
-.share-btn:hover {
-  background-color: #e3f2fd;
-  border-color: #90caf9;
-  transform: scale(1.05);
-}
-
 .like-btn.liked {
   background: linear-gradient(135deg, #ff4d6d 0%, #ff758f 100%);
   border-color: #ff4d6d;
@@ -175,8 +168,7 @@
   transform: scale(1.05);
 }
 
-.like-btn:disabled,
-.share-btn:disabled {
+.like-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none !important;

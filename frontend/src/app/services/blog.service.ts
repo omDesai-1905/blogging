@@ -64,8 +64,4 @@ export class BlogService {
   deleteBlog(blogId: string): Observable<ApiResponse> {
     return this.http.delete<ApiResponse>(`${this.apiUrl}/${blogId}`);
   }
-
-  shareBlog(blogId: string): Observable<ApiResponse<{ shareUrl: string; title: string; slug: string }>> {
-    return this.http.get<ApiResponse<{ shareUrl: string; title: string; slug: string }>>(`${this.apiUrl}/${blogId}/share`);
-  }
 }
