@@ -60,9 +60,11 @@ app.use(cookieParser()); //cookie-parser is used to access cookies from the user
 import authRoute from "./src/routes/auth.route.js";
 import blogRoute from "./src/routes/blog.routes.js";
 import userRoute from "./src/routes/user.route.js";
+import adminRoute from "./src/routes/admin.route.js";
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/blog", blogRoute);
 app.use("/api/v1/user", userRoute);
+app.use("/api/v1/admin", adminRoute);
 
 // Error handling middleware - MUST BE AFTER ROUTES
 app.use((err, req, res, next) => {

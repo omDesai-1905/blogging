@@ -9,6 +9,10 @@ import { BlogCreateComponent } from './components/blog-create/blog-create.compon
 import { BlogEditComponent } from './components/blog-edit/blog-edit.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
+import { AdminGuard } from './guards/admin.guard';
+import { AdminLoginComponent } from './components/admin-login/admin-login.component';
+import { AdminUserDetailsComponent } from './components/admin-user-details/admin-user-details.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -20,5 +24,8 @@ export const routes: Routes = [
   { path: 'blog/:id', component: BlogDetailComponent },
   { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
   { path: 'user/:userName', component: UserProfileComponent },
+  { path: 'admin/login', component: AdminLoginComponent },
+  { path: 'admin', component: AdminDashboardComponent, canActivate: [AdminGuard] },
+  { path: 'admin/user/:userId', component: AdminUserDetailsComponent, canActivate: [AdminGuard] },
   { path: '**', redirectTo: '' }
 ];

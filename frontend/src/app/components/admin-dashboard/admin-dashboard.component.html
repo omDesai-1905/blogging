@@ -1,0 +1,86 @@
+<section class="admin-page">
+  <div class="container">
+    <nav class="admin-nav">
+      <div class="admin-brand">Admin Panel</div>
+      <div class="admin-nav-links">
+        <a routerLink="/admin" class="active">Dashboard</a>
+        <a routerLink="/">User Site</a>
+      </div>
+    </nav>
+
+    <header class="admin-header">
+      <h2>Platform Admin Panel</h2>
+      <button class="refresh-btn" (click)="loadDashboard()">Refresh</button>
+    </header>
+
+    <div class="search-row">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search users by name, username, or email"
+        [(ngModel)]="userSearchTerm"
+      />
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search blogs by title, category, or content"
+        [(ngModel)]="blogSearchTerm"
+      />
+    </div>
+
+    <div class="state" *ngIf="loading">Loading dashboard...</div>
+    <div class="state error" *ngIf="!loading && error">{{ error }}</div>
+
+    <ng-container *ngIf="!loading && dashboardData">
+      <div class="summary-grid">
+        <article class="summary-card">
+          <h3>Total Users</h3>
+          <p>{{ dashboardData.summary.totalUsers }}</p>
+        </article>
+        <article class="summary-card">
+          <h3>Total Blogs</h3>
+          <p>{{ dashboardData.summary.totalBlogs }}</p>
+        </article>
+      </div>
+
+      <div class="users-table-wrap">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Total Blogs</th>
+              <th>Total Likes</th>
+              <th>Total Comments</th>
+              <th>Blogs</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container
+              *ngFor="let user of filteredUsers(); trackBy: trackByUserId"
+            >
+              <tr>
+                <td>
+                  <a class="user-link" [routerLink]="['/admin/user', user._id]"
+                    >&#64;{{ user.userName }}</a
+                  >
+                </td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role }}</td>
+                <td>{{ user.totalBlogs }}</td>
+                <td>{{ user.totalLikes }}</td>
+                <td>{{ user.totalComments }}</td>
+                <td>
+                  <a class="toggle-btn" [routerLink]="['/admin/user', user._id]"
+                    >Open</a
+                  >
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+  </div>
+</section>

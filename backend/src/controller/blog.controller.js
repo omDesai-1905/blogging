@@ -7,6 +7,7 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import mongoose from "mongoose";
 import { uploadOnCouldinary, deleteImage } from "../utils/couldinary.js";
+import { UserRole } from "../constants.js";
 
 export const createBlogPost = AsyncHandler(async (req, res) => {
   const user = req.user;
@@ -80,7 +81,10 @@ export const deleteBlogPost = AsyncHandler(async (req, res) => {
   if (!blog) {
     throw new ApiError(404, "Blog post not found");
   }
-  if (blog.userId.toString() !== req.user._id.toString()) {
+  const isOwner = blog.userId.toString() === req.user._id.toString();
+  const isAdmin = req.user.role === UserRole.ADMIN;
+
+  if (!isOwner && !isAdmin) {
     throw new ApiError(403, "You are not authorized to delete this blog post");
   }
 

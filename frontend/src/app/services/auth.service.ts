@@ -105,6 +105,10 @@ export class AuthService {
     return !!this.getToken();
   }
 
+  isAdmin(): boolean {
+    return this.currentUserValue?.role === 'ADMIN';
+  }
+
   get currentUserValue(): User | null {
     return this.currentUserSubject.value;
   }

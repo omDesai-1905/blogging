@@ -110,6 +110,9 @@
             <li>
               <a routerLink="/blog/create" routerLinkActive="active">Write</a>
             </li>
+            <li *ngIf="currentUser.role === 'ADMIN'">
+              <a routerLink="/admin" routerLinkActive="active">Admin</a>
+            </li>
             <li class="user-menu">
               <span class="user-name">{{ currentUser.name }}</span>
               <div class="dropdown">
@@ -127,6 +130,11 @@
 
           <ng-template #notLoggedIn>
             <li><a routerLink="/login" routerLinkActive="active">Login</a></li>
+            <li>
+              <a routerLink="/admin/login" routerLinkActive="active"
+                >Admin Login</a
+              >
+            </li>
             <li>
               <a
                 routerLink="/register"

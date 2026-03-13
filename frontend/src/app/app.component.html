@@ -1,5 +1,13 @@
-<app-header></app-header>
-<main class="main-content">
-  <router-outlet></router-outlet>
-</main>
-<app-footer></app-footer>
+<ng-container *ngIf="showUserLayout; else adminLayout">
+  <app-header></app-header>
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+  <app-footer></app-footer>
+</ng-container>
+
+<ng-template #adminLayout>
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</ng-template>

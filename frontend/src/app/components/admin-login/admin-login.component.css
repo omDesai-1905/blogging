@@ -1,0 +1,116 @@
+.admin-login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(11, 132, 255, 0.16), transparent 45%),
+    radial-gradient(circle at 80% 80%, rgba(255, 117, 24, 0.18), transparent 42%),
+    linear-gradient(135deg, #f8fbff 0%, #fef6ec 100%);
+}
+
+.admin-login-card {
+  width: 100%;
+  max-width: 460px;
+  background: #ffffff;
+  border: 1px solid #e5eaf2;
+  border-radius: 18px;
+  padding: 32px;
+  box-shadow: 0 20px 40px rgba(27, 39, 67, 0.12);
+}
+
+.kicker {
+  margin: 0 0 8px;
+  color: #0a66cc;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+h1 {
+  margin: 0;
+  color: #172033;
+  font-size: 1.9rem;
+}
+
+.subtitle {
+  margin: 10px 0 24px;
+  color: #4b5b77;
+  line-height: 1.5;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+label {
+  color: #22314f;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+input {
+  border: 1px solid #d3dcec;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+}
+
+input:focus {
+  outline: none;
+  border-color: #0a66cc;
+  box-shadow: 0 0 0 3px rgba(10, 102, 204, 0.15);
+}
+
+button {
+  margin-top: 6px;
+  border: none;
+  border-radius: 12px;
+  padding: 13px 16px;
+  background: linear-gradient(135deg, #0a66cc 0%, #0b84ff 100%);
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.error {
+  margin: 4px 0;
+  color: #b42318;
+  background: #fef3f2;
+  border: 1px solid #fecdca;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 0.88rem;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 16px;
+  color: #0a66cc;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 520px) {
+  .admin-login-card {
+    padding: 24px;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+}

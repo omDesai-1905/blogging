@@ -9,6 +9,7 @@ import {
   changePasswordSchema,
 } from "../schema/auth.schema.js";
 import { deleteImage, uploadOnCouldinary } from "../utils/couldinary.js";
+import { UserRole } from "../constants.js";
 
 export const registerUser = AsyncHandler(async (req, res) => {
   try {
@@ -62,6 +63,61 @@ export const loginUser = AsyncHandler(async (req, res) => {
     // If emailOrUsername is provided, use it for both email and userName search
     const searchEmail = emailOrUsername || email;
     const searchUserName = emailOrUsername || userName;
+
+    // Allow env-based admin login for dedicated admin credentials.
+    const adminIdentifier = process.env.ADMIN_LOGIN_IDENTIFIER;
+    const adminPassword = process.env.ADMIN_LOGIN_PASSWORD;
+    const matchedAdminIdentifier =
+      searchEmail === adminIdentifier || searchUserName === adminIdentifier;
+
+    if (adminIdentifier && adminPassword && matchedAdminIdentifier) {
+      if (password !== adminPassword) {
+        throw new ApiError(400, "Invalid Credentials Password Incorrect");
+      }
+
+      const configuredAdminUserName = (
+        process.env.ADMIN_USERNAME || "blogsphere_admin"
+      ).toLowerCase();
+
+      let adminUser = await User.findOne({ email: adminIdentifier });
+
+      if (!adminUser) {
+        adminUser = await User.findOne({ userName: configuredAdminUserName });
+      }
+
+      if (!adminUser) {
+        adminUser = await User.create({
+          name: process.env.ADMIN_DISPLAY_NAME || "BlogSphere Admin",
+          email: adminIdentifier,
+          userName: configuredAdminUserName,
+          password: adminPassword,
+          avatar: "",
+          role: UserRole.ADMIN,
+        });
+      } else {
+        adminUser.role = UserRole.ADMIN;
+        adminUser.email = adminIdentifier;
+        adminUser.userName = configuredAdminUserName;
+        if (!adminUser.name) {
+          adminUser.name = process.env.ADMIN_DISPLAY_NAME || "BlogSphere Admin";
+        }
+        await adminUser.save({ validateBeforeSave: false });
+      }
+
+      const accessToken = adminUser.generateAccessToken();
+
+      const loggedInAdmin = await User.findById(adminUser._id).select(
+        "-password",
+      );
+
+      const response = new ApiResponse(
+        200,
+        { user: loggedInAdmin, accessToken },
+        "Admin Logged In Successfully",
+      );
+
+      return res.status(response.statusCode).json(response);
+    }
 
     const user = await User.findOne({
       $or: [{ email: searchEmail }, { userName: searchUserName }],

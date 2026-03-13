@@ -1,0 +1,69 @@
+<section class="admin-page">
+  <div class="container">
+    <nav class="admin-nav">
+      <div class="admin-brand">Admin Panel</div>
+      <div class="admin-nav-links">
+        <a routerLink="/admin">Dashboard</a>
+        <a routerLink="/">User Site</a>
+      </div>
+    </nav>
+
+    <div class="state" *ngIf="loading">Loading user details...</div>
+    <div class="state error" *ngIf="!loading && error">{{ error }}</div>
+
+    <ng-container *ngIf="!loading && data">
+      <header class="admin-header">
+        <h2>{{ data.user.name }} (&#64;{{ data.user.userName }})</h2>
+        <a routerLink="/admin" class="back-btn">Back to Dashboard</a>
+      </header>
+
+      <div class="summary-grid">
+        <article class="summary-card">
+          <h3>Total Users</h3>
+          <p>{{ data.summary.totalUsers }}</p>
+        </article>
+        <article class="summary-card">
+          <h3>Total Blogs</h3>
+          <p>{{ data.summary.totalBlogs }}</p>
+        </article>
+        <article class="summary-card">
+          <h3>Total Likes</h3>
+          <p>{{ data.summary.totalLikes }}</p>
+        </article>
+        <article class="summary-card">
+          <h3>Total Comments</h3>
+          <p>{{ data.summary.totalComments }}</p>
+        </article>
+      </div>
+
+      <div class="blogs-grid">
+        <article class="blog-card" *ngFor="let blog of data.user.blogs">
+          <a [routerLink]="['/blog', blog._id]" class="blog-link">
+            <img [src]="blog.image" [alt]="blog.title" />
+            <div class="blog-meta">
+              <h3>{{ blog.title }}</h3>
+              <p>
+                {{ blog.category }} • 👍 {{ blog.likesCount }} • 💬
+                {{ blog.commentsCount }}
+              </p>
+              <p class="content">{{ blog.content }}</p>
+            </div>
+          </a>
+          <div class="blog-actions">
+            <button
+              type="button"
+              class="delete-btn"
+              (click)="deleteBlog(blog._id, blog.title)"
+            >
+              Delete Blog
+            </button>
+          </div>
+        </article>
+      </div>
+
+      <p class="empty" *ngIf="data.user.blogs.length === 0">
+        No blogs found for this user.
+      </p>
+    </ng-container>
+  </div>
+</section>

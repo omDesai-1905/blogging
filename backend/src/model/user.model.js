@@ -1,7 +1,12 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { UserGender, AvailableGenderForUser } from "../constants.js";
+import {
+  UserGender,
+  AvailableGenderForUser,
+  UserRole,
+  AvailableUserRoles,
+} from "../constants.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -37,6 +42,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    role: {
+      type: String,
+      enum: AvailableUserRoles,
+      default: UserRole.USER,
+    },
   },
   { timestamps: true },
 );
@@ -59,6 +69,7 @@ userSchema.methods.generateAccessToken = function () {
       email: this.email,
       userName: this.userName,
       name: this.name,
+      role: this.role,
     },
     process.env.ACCESS_TOKEN_SECRET,
     {

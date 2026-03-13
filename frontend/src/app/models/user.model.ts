@@ -3,6 +3,7 @@ export interface User {
   name: string;
   userName: string;
   email: string;
+  role?: 'USER' | 'ADMIN';
   gender?: 'MALE' | 'FEMALE' | 'OTHER';
   avatar?: string;
   followers?: number;
@@ -33,6 +34,7 @@ export interface RegisterRequest {
 export interface LoginRequest {
   userName?: string;
   email?: string;
+  emailOrUsername?: string;
   password: string;
 }
 

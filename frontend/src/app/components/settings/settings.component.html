@@ -67,11 +67,11 @@
     <div class="likes-list" *ngIf="!isLoadingLikes">
       <div class="like-card" *ngFor="let like of likesOnMyPosts">
         <div class="like-user-info">
-          <img
+          <!-- <img
             [src]="like.user.avatar || 'assets/default-avatar.png'"
             [alt]="like.user.name"
             class="user-avatar"
-          />
+          /> -->
           <div class="user-details">
             <a [routerLink]="['/user', like.user.userName]">
               <h4>{{ like.user.name }}</h4>
@@ -103,11 +103,11 @@
     <div class="comments-list" *ngIf="!isLoadingComments">
       <div class="comment-card" *ngFor="let comment of commentsOnMyPosts">
         <div class="comment-user-info">
-          <img
+          <!-- <img
             [src]="comment.user.avatar || 'assets/default-avatar.png'"
             [alt]="comment.user.name"
             class="user-avatar"
-          />
+          /> -->
           <div class="user-details">
             <a [routerLink]="['/user', comment.user.userName]">
               <h4>{{ comment.user.name }}</h4>

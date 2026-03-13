@@ -1,0 +1,35 @@
+<div class="admin-login-page">
+  <div class="admin-login-card">
+    <p class="kicker">Restricted Area</p>
+    <h1>Admin Sign In</h1>
+    <p class="subtitle">
+      Use admin credentials configured in the backend environment.
+    </p>
+
+    <form [formGroup]="adminLoginForm" (ngSubmit)="onSubmit()">
+      <label for="admin-identifier">Admin Email or Username</label>
+      <input
+        id="admin-identifier"
+        type="text"
+        formControlName="emailOrUsername"
+        placeholder="Enter admin email"
+      />
+
+      <label for="admin-password">Password</label>
+      <input
+        id="admin-password"
+        type="password"
+        formControlName="password"
+        placeholder="Enter admin password"
+      />
+
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+      <button type="submit" [disabled]="isLoading">
+        {{ isLoading ? "Signing in..." : "Sign In to Admin Panel" }}
+      </button>
+    </form>
+
+    <a class="back-link" routerLink="/login">Go to user login</a>
+  </div>
+</div>
