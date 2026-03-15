@@ -29,12 +29,12 @@ const router = express.Router();
 router
   .route("/")
   .get(getAllBlogPosts)
-  .post(verifyJWT, upload.single("image"), createBlogPost);
+  .post(verifyJWT, upload.single("featureImage"), createBlogPost);
 
 router
   .route("/:blogId")
   .get(getLoggedInUserOrIgnore, getBlogPost)
-  .post(verifyJWT, upload.single("image"), updateBlogPost)
+  .post(verifyJWT, upload.single("featureImage"), updateBlogPost)
   .delete(verifyJWT, deleteBlogPost);
 
 router

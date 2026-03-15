@@ -32,8 +32,8 @@ export class BlogService {
     formData.append('slug', data.slug);
     formData.append('category', data.category);
     
-    if (data.image) {
-      formData.append('image', data.image);
+    if (data.featureImage) {
+      formData.append('featureImage', data.featureImage);
     }
 
     return this.http.post<BlogResponse>(this.apiUrl, formData);
@@ -54,8 +54,8 @@ export class BlogService {
     if (data.category) {
       formData.append('category', data.category);
     }
-    if (data.image) {
-      formData.append('image', data.image);
+    if (data.featureImage) {
+      formData.append('featureImage', data.featureImage);
     }
 
     return this.http.post<BlogResponse>(`${this.apiUrl}/${blogId}`, formData);

@@ -77,8 +77,8 @@
 
         <div class="posts-grid" *ngIf="!isLoadingPosts">
           <div class="post-card" *ngFor="let post of userPosts">
-            <div class="post-image" *ngIf="post.image">
-              <img [src]="post.image" [alt]="post.title" />
+            <div class="post-image" *ngIf="post.featureImage">
+              <img [src]="post.featureImage" [alt]="post.title" />
             </div>
             <div class="post-content">
               <span class="post-category">{{ post.category }}</span>

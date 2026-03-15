@@ -9,7 +9,7 @@ interface MyPost {
   title: string;
   slug: string;
   content: string;
-  image: string;
+  featureImage: string;
   category: string;
   createdAt: Date;
   likesCount?: number;
@@ -23,7 +23,6 @@ interface LikeOnPost {
     _id: string;
     name: string;
     userName: string;
-    avatar?: string;
   };
   blog: {
     _id: string;
@@ -40,7 +39,6 @@ interface CommentOnPost {
     _id: string;
     name: string;
     userName: string;
-    avatar?: string;
   };
   blog: {
     _id: string;
@@ -53,7 +51,6 @@ interface FollowerUser {
   _id: string;
   name: string;
   userName: string;
-  avatar?: string;
   followedAt: Date;
 }
 

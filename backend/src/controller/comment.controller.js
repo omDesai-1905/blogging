@@ -21,9 +21,7 @@ export const createComment = AsyncHandler(async (req, res) => {
   const created = await Comment.create({
     content,
     blogId: blogPost._id,
-    postId: blogPost._id,
     userId: user._id,
-    userEmail: user.email,
   });
   if (!created) throw new ApiError(500, "Failed to create comment");
 

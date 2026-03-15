@@ -6,7 +6,6 @@ export interface User {
 
   role?: 'USER' | 'ADMIN';
   gender?: 'MALE' | 'FEMALE' | 'OTHER';
-  avatar?: string;
   followers?: number;
   following?: number;
   isFollowing?: boolean;

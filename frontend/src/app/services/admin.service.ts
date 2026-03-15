@@ -10,7 +10,7 @@ export interface AdminUserBlogActivity {
   slug: string;
   category: string;
   content: string;
-  image: string;
+  featureImage: string;
   createdAt: string;
   likesCount: number;
   commentsCount: number;
@@ -32,7 +32,6 @@ export interface AdminRelationUser {
   name: string;
   userName: string;
   email: string;
-  avatar?: string;
   followedAt: string;
 }
 

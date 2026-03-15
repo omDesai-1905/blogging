@@ -11,7 +11,6 @@ interface UserProfile {
   userId: string;
   name: string;
   userName: string;
-  avatar?: string;
   followers: number;
   following: number;
   isFollowing: boolean;

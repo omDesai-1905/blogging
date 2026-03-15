@@ -75,7 +75,7 @@ export class BlogCreateComponent implements OnInit {
 
     const blogData = {
       ...this.blogForm.value,
-      image: this.selectedFile
+      featureImage: this.selectedFile
     };
 
     this.blogService.createBlog(blogData).subscribe({

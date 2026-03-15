@@ -434,14 +434,6 @@
   color: inherit;
 }
 
-.user-avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #e5e7eb;
-}
-
 .user-info h4 {
   margin: 0 0 0.25rem 0;
   font-size: 1rem;
@@ -526,14 +518,6 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
-.comment-user-info .user-avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #e5e7eb;
-}
-
 .comment-user-info .user-details a {
   text-decoration: none;
   color: inherit;
@@ -586,14 +570,6 @@
   margin-bottom: 1rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #e5e7eb;
-}
-
-.like-user-info .user-avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #e5e7eb;
 }
 
 .like-user-info .user-details a {

@@ -3,14 +3,11 @@ import { User } from './user.model';
 export interface Blog {
   _id: string;
   userId: string;
-  userEmail: string;
   title: string;
   slug: string;
   content: string;
-  image: string;
+  featureImage: string;
   category: string;
-  visit: number;
-  topicId?: string;
   createdAt: Date;
   updatedAt: Date;
   user?: User;
@@ -24,7 +21,7 @@ export interface CreateBlogRequest {
   content: string;
   slug: string;
   category: string;
-  image?: File;
+  featureImage?: File;
 }
 
 export interface UpdateBlogRequest {
@@ -32,7 +29,7 @@ export interface UpdateBlogRequest {
   content?: string;
   slug?: string;
   category?: string;
-  image?: File;
+  featureImage?: File;
 }
 
 export interface BlogResponse {

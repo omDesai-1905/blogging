@@ -108,7 +108,7 @@
       <div class="blogs-grid">
         <article class="blog-card" *ngFor="let blog of data.user.blogs">
           <a [routerLink]="['/admin/blog', blog._id]" class="blog-link">
-            <img [src]="blog.image" [alt]="blog.title" />
+            <img [src]="blog.featureImage" [alt]="blog.title" />
             <div class="blog-meta">
               <h3>{{ blog.title }}</h3>
               <p>

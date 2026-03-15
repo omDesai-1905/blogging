@@ -56,12 +56,11 @@ export const createBlogPost = AsyncHandler(async (req, res) => {
 
   const blog = await Blog.create({
     userId: user._id,
-    userEmail: user.email,
     title,
     content,
     slug,
     category,
-    image: imageUrl,
+    featureImage: imageUrl,
   });
   if (!blog) {
     throw new ApiError(500, "Failed to create blog post");
@@ -88,7 +87,7 @@ export const deleteBlogPost = AsyncHandler(async (req, res) => {
     throw new ApiError(403, "You are not authorized to delete this blog post");
   }
 
-  await deleteImage(blog.image);
+  await deleteImage(blog.featureImage);
 
   await Blog.findByIdAndDelete(blog._id);
   await Comment.deleteMany({ blogId: blog._id });
@@ -116,15 +115,15 @@ export const updateBlogPost = AsyncHandler(async (req, res) => {
   // Handle image upload if new image is provided
   if (req.file) {
     // Delete old image from Cloudinary
-    await deleteImage(blog.image);
+    await deleteImage(blog.featureImage);
 
     // Upload new image to Cloudinary
     const cloudinaryResponse = await uploadOnCouldinary(req.file.path);
     if (cloudinaryResponse && cloudinaryResponse.secure_url) {
-      blog.image = cloudinaryResponse.secure_url;
+      blog.featureImage = cloudinaryResponse.secure_url;
     } else {
       // Fallback to local file URL if Cloudinary fails
-      blog.image = `/images/${req.file.filename}`;
+      blog.featureImage = `/images/${req.file.filename}`;
     }
   }
 
@@ -161,7 +160,6 @@ export const getAllBlogPosts = AsyncHandler(async (req, res) => {
               email: 1,
               _id: 1,
               name: 1,
-              avatar: 1,
             },
           },
         ],
@@ -261,7 +259,6 @@ export const getBlogPost = AsyncHandler(async (req, res) => {
               email: 1,
               _id: 1,
               name: 1,
-              avatar: 1,
             },
           },
         ],
@@ -286,8 +283,6 @@ export const getBlogPost = AsyncHandler(async (req, res) => {
   if (blog.length == 0) {
     throw new ApiError(404, "Blog post not found");
   }
-
-  await Blog.updateOne({ _id: blog[0]._id }, { visits: blog[0].visits + 1 });
 
   let isLiked = false;
   if (req.user) {

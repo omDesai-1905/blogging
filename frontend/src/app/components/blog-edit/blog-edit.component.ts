@@ -56,7 +56,7 @@ export class BlogEditComponent implements OnInit {
             category: this.currentBlog.category,
             content: this.currentBlog.content
           });
-          this.imagePreview = this.currentBlog.image;
+          this.imagePreview = this.currentBlog.featureImage;
         } else {
           this.errorMessage = 'Failed to load blog';
         }
@@ -112,7 +112,7 @@ export class BlogEditComponent implements OnInit {
     };
 
     if (this.selectedFile) {
-      blogData.image = this.selectedFile;
+      blogData.featureImage = this.selectedFile;
     }
 
     this.blogService.updateBlog(this.blogId, blogData).subscribe({

@@ -9,7 +9,6 @@ import {
   loginSchema,
   changePasswordSchema,
 } from "../schema/auth.schema.js";
-import { deleteImage, uploadOnCouldinary } from "../utils/couldinary.js";
 import { UserRole } from "../constants.js";
 
 export const registerUser = AsyncHandler(async (req, res) => {
@@ -218,33 +217,6 @@ export const resetPassword = AsyncHandler(async (req, res) => {
   await user.save();
 
   const response = new ApiResponse(200, {}, "Password reset successfully");
-  return res.status(response.statusCode).json(response);
-});
-
-export const changeAvatar = AsyncHandler(async (req, res) => {
-  const user = req.user;
-  const file = req.file;
-  if (!file) {
-    throw new ApiError(400, "No file uploaded, please provide an image");
-  }
-
-  if (!user.avatar) {
-    await deleteImage(user.avatar);
-  }
-
-  const imageUrl = await uploadOnCouldinary(file.path);
-  if (!imageUrl) {
-    throw new ApiError(400, "Image upload failed");
-  }
-
-  user.avatar = imageUrl.secure_url;
-  await user.save();
-
-  const response = new ApiResponse(
-    200,
-    { avatar: user.avatar },
-    "Avatar changed successfully",
-  );
   return res.status(response.statusCode).json(response);
 });
 

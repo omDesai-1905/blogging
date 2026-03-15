@@ -62,7 +62,6 @@ export const getUserProfile = AsyncHandler(async (req, res) => {
     userId: user._id,
     name: user.name,
     userName: user.userName,
-    avatar: user.avatar,
     followers: followers.length,
     following: following.length,
     isFollowing,
@@ -116,7 +115,6 @@ export const getUserPost = AsyncHandler(async (req, res) => {
           {
             $project: {
               userName: 1,
-              avatar: 1,
               email: 1,
               _id: 1,
               name: 1,
@@ -340,7 +338,7 @@ export const getPendingFollowRequests = AsyncHandler(async (req, res) => {
   const pendingRequests = await Follow.find({
     following: req.user._id,
     status: "pending",
-  }).populate("follower", "name userName avatar email");
+  }).populate("follower", "name userName email");
 
   console.log("Found pending requests:", pendingRequests.length);
   console.log("Requests:", JSON.stringify(pendingRequests, null, 2));
@@ -358,7 +356,7 @@ export const getMySentFollowRequests = AsyncHandler(async (req, res) => {
   const sentRequests = await Follow.find({
     follower: req.user._id,
     status: "pending",
-  }).populate("following", "name userName avatar email");
+  }).populate("following", "name userName email");
 
   const response = new ApiResponse(
     200,
@@ -402,7 +400,7 @@ export const getMyPosts = AsyncHandler(async (req, res) => {
         title: 1,
         slug: 1,
         content: 1,
-        image: 1,
+        featureImage: 1,
         category: 1,
         createdAt: 1,
         likesCount: 1,
@@ -461,7 +459,6 @@ export const getLikesOnMyPosts = AsyncHandler(async (req, res) => {
           _id: "$user._id",
           name: "$user.name",
           userName: "$user.userName",
-          avatar: "$user.avatar",
         },
         blog: {
           _id: "$blog._id",
@@ -527,7 +524,6 @@ export const getCommentsOnMyPosts = AsyncHandler(async (req, res) => {
           _id: "$user._id",
           name: "$user.name",
           userName: "$user.userName",
-          avatar: "$user.avatar",
         },
         blog: {
           _id: "$blog._id",
@@ -573,7 +569,6 @@ export const getMyFollowers = AsyncHandler(async (req, res) => {
         _id: "$followerUser._id",
         name: "$followerUser.name",
         userName: "$followerUser.userName",
-        avatar: "$followerUser.avatar",
         followedAt: "$createdAt",
       },
     },
@@ -614,7 +609,6 @@ export const getMyFollowing = AsyncHandler(async (req, res) => {
         _id: "$followingUser._id",
         name: "$followingUser.name",
         userName: "$followingUser.userName",
-        avatar: "$followingUser.avatar",
         followedAt: "$createdAt",
       },
     },
@@ -644,7 +638,7 @@ export const searchUsers = AsyncHandler(async (req, res) => {
       { userName: { $regex: query, $options: "i" } },
     ],
   })
-    .select("_id name userName avatar")
+    .select("_id name userName")
     .limit(20);
 
   const response = new ApiResponse(200, users, "Users found successfully");
