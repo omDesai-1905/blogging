@@ -106,7 +106,14 @@ export class AuthService {
   }
 
   isAdmin(): boolean {
-    return this.currentUserValue?.role === 'ADMIN';
+    const token = this.getToken();
+    if (!token) return false;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload?.role === 'ADMIN';
+    } catch {
+      return false;
+    }
   }
 
   get currentUserValue(): User | null {

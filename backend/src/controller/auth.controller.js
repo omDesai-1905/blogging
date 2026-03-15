@@ -3,6 +3,7 @@ import { AsyncHandler } from "../utils/asyncHandles.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import {
   registerSchema,
   loginSchema,
@@ -13,10 +14,10 @@ import { UserRole } from "../constants.js";
 
 export const registerUser = AsyncHandler(async (req, res) => {
   try {
-    const { name, email, userName, password } = req.body;
+    const { name, email, userName, password, gender } = req.body;
 
     // Validate request body
-    await registerSchema.validate({ name, email, userName, password });
+    await registerSchema.validate({ name, email, userName, password, gender });
 
     const userExits = await User.findOne({
       $or: [{ email }, { userName }],
@@ -30,7 +31,7 @@ export const registerUser = AsyncHandler(async (req, res) => {
       email,
       userName,
       password,
-      avatar: "",
+      ...(gender && { gender }),
     });
 
     const createdUser = await User.findById(user._id).select("-password");
@@ -79,35 +80,26 @@ export const loginUser = AsyncHandler(async (req, res) => {
         process.env.ADMIN_USERNAME || "blogsphere_admin"
       ).toLowerCase();
 
-      let adminUser = await User.findOne({ email: adminIdentifier });
+      const loggedInAdmin = {
+        _id: "env-admin",
+        name: process.env.ADMIN_DISPLAY_NAME || "BlogSphere Admin",
+        email: adminIdentifier,
+        userName: configuredAdminUserName,
+        role: UserRole.ADMIN,
+      };
 
-      if (!adminUser) {
-        adminUser = await User.findOne({ userName: configuredAdminUserName });
-      }
-
-      if (!adminUser) {
-        adminUser = await User.create({
-          name: process.env.ADMIN_DISPLAY_NAME || "BlogSphere Admin",
-          email: adminIdentifier,
-          userName: configuredAdminUserName,
-          password: adminPassword,
-          avatar: "",
-          role: UserRole.ADMIN,
-        });
-      } else {
-        adminUser.role = UserRole.ADMIN;
-        adminUser.email = adminIdentifier;
-        adminUser.userName = configuredAdminUserName;
-        if (!adminUser.name) {
-          adminUser.name = process.env.ADMIN_DISPLAY_NAME || "BlogSphere Admin";
-        }
-        await adminUser.save({ validateBeforeSave: false });
-      }
-
-      const accessToken = adminUser.generateAccessToken();
-
-      const loggedInAdmin = await User.findById(adminUser._id).select(
-        "-password",
+      const accessToken = jwt.sign(
+        {
+          _id: loggedInAdmin._id,
+          email: loggedInAdmin.email,
+          userName: loggedInAdmin.userName,
+          name: loggedInAdmin.name,
+          role: loggedInAdmin.role,
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        {
+          expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+        },
       );
 
       const response = new ApiResponse(

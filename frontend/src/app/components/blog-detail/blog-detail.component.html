@@ -25,7 +25,10 @@
       </div>
 
       <div class="blog-actions" *ngIf="canEditBlog()">
-        <a [routerLink]="['/blog/edit', blog._id]" class="btn btn-secondary"
+        <a
+          *ngIf="!isAdminView"
+          [routerLink]="['/blog/edit', blog._id]"
+          class="btn btn-secondary"
           >Edit</a
         >
         <button (click)="deleteBlog()" class="btn btn-danger">Delete</button>
@@ -40,7 +43,7 @@
       <div [innerHTML]="blog.content"></div>
     </div>
 
-    <div class="blog-interaction">
+    <div class="blog-interaction" *ngIf="!isAdminView">
       <button
         (click)="toggleLike()"
         class="like-btn"
@@ -53,7 +56,7 @@
       </button>
     </div>
 
-    <div class="comments-section">
+    <div class="comments-section" *ngIf="!isAdminView">
       <h3>Comments ({{ comments.length }})</h3>
 
       <div class="comment-form" *ngIf="isAuthenticated">
@@ -99,6 +102,6 @@
   </div>
 
   <div class="back-link">
-    <a routerLink="/blogs">← Back to all blogs</a>
+    <a [routerLink]="isAdminView ? '/admin' : '/blogs'">← Back to all blogs</a>
   </div>
 </div>

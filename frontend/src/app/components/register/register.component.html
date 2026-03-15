@@ -87,6 +87,25 @@
           </div>
 
           <div class="input-group">
+            <span class="input-icon">⚧</span>
+            <select formControlName="gender" class="input-field">
+              <option value="" disabled selected>Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div
+            class="error-text"
+            *ngIf="
+              registerForm.get('gender')?.invalid &&
+              registerForm.get('gender')?.touched
+            "
+          >
+            Gender is required
+          </div>
+
+          <div class="input-group">
             <span class="input-icon">🔒</span>
             <input
               type="password"

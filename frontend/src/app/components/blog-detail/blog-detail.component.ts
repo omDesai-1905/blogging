@@ -27,6 +27,7 @@ export class BlogDetailComponent implements OnInit {
   isAuthenticated = false;
   currentUserId = '';
   isTogglingLike = false;
+  isAdminView = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -39,6 +40,7 @@ export class BlogDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.isAdminView = this.router.url.startsWith('/admin/');
     this.isAuthenticated = this.authService.isAuthenticated();
     this.currentUserId = this.authService.currentUserValue?._id || '';
     
@@ -181,6 +183,10 @@ export class BlogDetailComponent implements OnInit {
   }
 
   canEditBlog(): boolean {
+    if (this.isAdminView) {
+      return true;
+    }
+
     return this.blog?.userId === this.currentUserId;
   }
 

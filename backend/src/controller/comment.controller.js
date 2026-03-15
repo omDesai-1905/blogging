@@ -18,17 +18,35 @@ export const createComment = AsyncHandler(async (req, res) => {
     throw new ApiError(404, "Blog post not found");
   }
 
-  const comment = await Comment.create({
+  const created = await Comment.create({
     content,
     blogId: blogPost._id,
     postId: blogPost._id,
     userId: user._id,
     userEmail: user.email,
   });
-  if (!comment) throw new ApiError(500, "Failed to create comment");
+  if (!created) throw new ApiError(500, "Failed to create comment");
+
+  const comment = await Comment.aggregate([
+    { $match: { _id: created._id } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "userId",
+        foreignField: "_id",
+        as: "user",
+        pipeline: [
+          { $project: { password: 0, createdAt: 0, updatedAt: 0, __v: 0 } },
+        ],
+      },
+    },
+    { $addFields: { author: { $first: "$user" } } },
+    { $project: { __v: 0 } },
+  ]);
+
   const response = new ApiResponse(
     201,
-    comment,
+    comment[0],
     "Comment created successfully",
   );
   return res.status(response.statusCode).json(response);

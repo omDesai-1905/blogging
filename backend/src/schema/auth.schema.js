@@ -5,6 +5,7 @@ export const registerSchema = Yup.object().shape({
   email: Yup.string().email().required(),
   userName: Yup.string().lowercase().required(),
   password: Yup.string().min(7).required(),
+  gender: Yup.string().oneOf(["male", "female", "other"]).optional(),
 });
 
 export const loginSchema = Yup.object()

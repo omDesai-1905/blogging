@@ -21,11 +21,19 @@ export interface AdminUserActivity {
   name: string;
   userName: string;
   email: string;
-  role: 'USER' | 'ADMIN';
   totalBlogs: number;
   totalLikes: number;
   totalComments: number;
   blogs: AdminUserBlogActivity[];
+}
+
+export interface AdminRelationUser {
+  _id: string;
+  name: string;
+  userName: string;
+  email: string;
+  avatar?: string;
+  followedAt: string;
 }
 
 export interface AdminDashboardData {
@@ -50,8 +58,11 @@ export interface AdminUserDetailsData {
     name: string;
     userName: string;
     email: string;
-    role: 'USER' | 'ADMIN';
     blogs: AdminUserBlogActivity[];
+    followers: AdminRelationUser[];
+    following: AdminRelationUser[];
+    totalFollowers: number;
+    totalFollowing: number;
   };
 }
 

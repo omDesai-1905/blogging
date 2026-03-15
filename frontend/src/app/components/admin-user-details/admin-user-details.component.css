@@ -82,6 +82,125 @@
   font-weight: 700;
 }
 
+.relations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.8rem;
+  margin: 0 0 1rem;
+}
+
+.relation-card {
+  background: #ffffff;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  padding: 0.9rem;
+}
+
+.relation-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: #334155;
+}
+
+.relation-open-btn {
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 0.45rem 0.75rem;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.relation-open-btn:hover {
+  background: #dbeafe;
+}
+
+.relation-card ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.relation-card li {
+  margin: 0.3rem 0;
+}
+
+.relation-card a {
+  color: #1e3a8a;
+  text-decoration: none;
+}
+
+.relation-card a:hover {
+  text-decoration: underline;
+}
+
+.relation-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.62);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 1100;
+}
+
+.relation-modal-content {
+  width: min(700px, 100%);
+  max-height: 80vh;
+  overflow: auto;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  padding: 1rem;
+}
+
+.relation-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.relation-modal-header h3 {
+  margin: 0;
+}
+
+.close-btn {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.35rem 0.7rem;
+  background: #f8fafc;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  background: #e2e8f0;
+}
+
+.relation-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.relation-list li {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+  margin-bottom: 0.55rem;
+}
+
+.relation-user-name {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.relation-user-email {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
 .blogs-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));

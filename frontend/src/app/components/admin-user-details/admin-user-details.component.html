@@ -23,22 +23,91 @@
           <p>{{ data.summary.totalUsers }}</p>
         </article>
         <article class="summary-card">
-          <h3>Total Blogs</h3>
-          <p>{{ data.summary.totalBlogs }}</p>
+          <h3>User Blogs</h3>
+          <p>{{ userTotalBlogs }}</p>
         </article>
         <article class="summary-card">
-          <h3>Total Likes</h3>
-          <p>{{ data.summary.totalLikes }}</p>
+          <h3>User Likes</h3>
+          <p>{{ userTotalLikes }}</p>
         </article>
         <article class="summary-card">
-          <h3>Total Comments</h3>
-          <p>{{ data.summary.totalComments }}</p>
+          <h3>User Comments</h3>
+          <p>{{ userTotalComments }}</p>
         </article>
+        <article class="summary-card">
+          <h3>Followers</h3>
+          <p>{{ data.user.totalFollowers }}</p>
+        </article>
+        <article class="summary-card">
+          <h3>Following</h3>
+          <p>{{ data.user.totalFollowing }}</p>
+        </article>
+      </div>
+
+      <section class="relations-grid">
+        <article class="relation-card">
+          <h3>Followers List</h3>
+          <button
+            type="button"
+            class="relation-open-btn"
+            (click)="openRelationModal('followers')"
+          >
+            View Full Followers List
+          </button>
+        </article>
+
+        <article class="relation-card">
+          <h3>Following List</h3>
+          <button
+            type="button"
+            class="relation-open-btn"
+            (click)="openRelationModal('following')"
+          >
+            View Full Following List
+          </button>
+        </article>
+      </section>
+
+      <div
+        class="relation-modal"
+        *ngIf="isRelationModalOpen"
+        (click)="closeRelationModal()"
+      >
+        <section
+          class="relation-modal-content"
+          (click)="$event.stopPropagation()"
+        >
+          <header class="relation-modal-header">
+            <h3>{{ relationModalTitle }}</h3>
+            <button
+              type="button"
+              class="close-btn"
+              (click)="closeRelationModal()"
+            >
+              Close
+            </button>
+          </header>
+
+          <ul
+            class="relation-list"
+            *ngIf="relationUsers.length > 0; else noUsersInModal"
+          >
+            <li *ngFor="let relationUser of relationUsers">
+              <div class="relation-user-name">
+                {{ relationUser.name }} (&#64;{{ relationUser.userName }})
+              </div>
+              <div class="relation-user-email">{{ relationUser.email }}</div>
+            </li>
+          </ul>
+          <ng-template #noUsersInModal>
+            <p class="empty">No users found in this list.</p>
+          </ng-template>
+        </section>
       </div>
 
       <div class="blogs-grid">
         <article class="blog-card" *ngFor="let blog of data.user.blogs">
-          <a [routerLink]="['/blog', blog._id]" class="blog-link">
+          <a [routerLink]="['/admin/blog', blog._id]" class="blog-link">
             <img [src]="blog.image" [alt]="blog.title" />
             <div class="blog-meta">
               <h3>{{ blog.title }}</h3>

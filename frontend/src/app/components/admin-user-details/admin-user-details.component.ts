@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { AdminService, AdminUserDetailsData } from '../../services/admin.service';
+import {
+  AdminRelationUser,
+  AdminService,
+  AdminUserDetailsData
+} from '../../services/admin.service';
 
 @Component({
   selector: 'app-admin-user-details',
@@ -15,6 +19,49 @@ export class AdminUserDetailsComponent implements OnInit {
   loading = true;
   error = '';
   private userId = '';
+  relationModalType: 'followers' | 'following' | null = null;
+
+  get userTotalBlogs(): number {
+    return this.data?.user.blogs.length ?? 0;
+  }
+
+  get userTotalLikes(): number {
+    return (
+      this.data?.user.blogs.reduce((total, blog) => total + (blog.likesCount || 0), 0) ?? 0
+    );
+  }
+
+  get userTotalComments(): number {
+    return (
+      this.data?.user.blogs.reduce((total, blog) => total + (blog.commentsCount || 0), 0) ?? 0
+    );
+  }
+
+  get isRelationModalOpen(): boolean {
+    return this.relationModalType !== null;
+  }
+
+  get relationModalTitle(): string {
+    if (this.relationModalType === 'followers') {
+      return 'Followers List';
+    }
+
+    if (this.relationModalType === 'following') {
+      return 'Following List';
+    }
+
+    return '';
+  }
+
+  get relationUsers(): AdminRelationUser[] {
+    if (!this.data || !this.relationModalType) {
+      return [];
+    }
+
+    return this.relationModalType === 'followers'
+      ? this.data.user.followers
+      : this.data.user.following;
+  }
 
   constructor(
     private route: ActivatedRoute,
@@ -67,5 +114,13 @@ export class AdminUserDetailsComponent implements OnInit {
         this.error = error?.error?.message || 'Failed to delete blog';
       }
     });
+  }
+
+  openRelationModal(type: 'followers' | 'following'): void {
+    this.relationModalType = type;
+  }
+
+  closeRelationModal(): void {
+    this.relationModalType = null;
   }
 }

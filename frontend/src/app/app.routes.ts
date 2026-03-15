@@ -27,5 +27,6 @@ export const routes: Routes = [
   { path: 'admin/login', component: AdminLoginComponent },
   { path: 'admin', component: AdminDashboardComponent, canActivate: [AdminGuard] },
   { path: 'admin/user/:userId', component: AdminUserDetailsComponent, canActivate: [AdminGuard] },
+  { path: 'admin/blog/:id', component: BlogDetailComponent, canActivate: [AdminGuard] },
   { path: '**', redirectTo: '' }
 ];

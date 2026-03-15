@@ -4,6 +4,7 @@ import { Blog } from "../model/blog.model.js";
 import { User } from "../model/user.model.js";
 import { Like } from "../model/like.model.js";
 import { Comment } from "../model/comment.model.js";
+import { Follow } from "../model/follow.model.js";
 
 export const getAdminDashboard = AsyncHandler(async (req, res) => {
   const [totalUsers, totalBlogs, totalLikes, totalComments] = await Promise.all(
@@ -65,9 +66,7 @@ export const getAdminDashboard = AsyncHandler(async (req, res) => {
     blogStatsByUser.map((item) => [String(item._id), item]),
   );
 
-  const users = await User.find({})
-    .select("name userName email avatar role")
-    .lean();
+  const users = await User.find({}).select("name userName email").lean();
 
   const userActivity = users
     .map((user) => {
@@ -77,8 +76,6 @@ export const getAdminDashboard = AsyncHandler(async (req, res) => {
         name: user.name,
         userName: user.userName,
         email: user.email,
-        avatar: user.avatar,
-        role: user.role,
         totalBlogs: stat?.totalBlogs || 0,
         totalLikes: stat?.totalLikes || 0,
         totalComments: stat?.totalComments || 0,
@@ -116,9 +113,7 @@ export const getAdminUserDetails = AsyncHandler(async (req, res) => {
     ],
   );
 
-  const user = await User.findById(userId)
-    .select("name userName email avatar role")
-    .lean();
+  const user = await User.findById(userId).select("name userName email").lean();
 
   if (!user) {
     return res.status(404).json(new ApiResponse(404, {}, "User not found"));
@@ -171,6 +166,73 @@ export const getAdminUserDetails = AsyncHandler(async (req, res) => {
     },
   ]);
 
+  const [followers, following] = await Promise.all([
+    Follow.aggregate([
+      {
+        $match: {
+          following: user._id,
+          status: "accepted",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "follower",
+          foreignField: "_id",
+          as: "followerUser",
+        },
+      },
+      {
+        $unwind: "$followerUser",
+      },
+      {
+        $project: {
+          _id: "$followerUser._id",
+          name: "$followerUser.name",
+          userName: "$followerUser.userName",
+          email: "$followerUser.email",
+          avatar: "$followerUser.avatar",
+          followedAt: "$createdAt",
+        },
+      },
+      {
+        $sort: { followedAt: -1 },
+      },
+    ]),
+    Follow.aggregate([
+      {
+        $match: {
+          follower: user._id,
+          status: "accepted",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "following",
+          foreignField: "_id",
+          as: "followingUser",
+        },
+      },
+      {
+        $unwind: "$followingUser",
+      },
+      {
+        $project: {
+          _id: "$followingUser._id",
+          name: "$followingUser.name",
+          userName: "$followingUser.userName",
+          email: "$followingUser.email",
+          avatar: "$followingUser.avatar",
+          followedAt: "$createdAt",
+        },
+      },
+      {
+        $sort: { followedAt: -1 },
+      },
+    ]),
+  ]);
+
   const response = new ApiResponse(
     200,
     {
@@ -183,6 +245,10 @@ export const getAdminUserDetails = AsyncHandler(async (req, res) => {
       user: {
         ...user,
         blogs,
+        followers,
+        following,
+        totalFollowers: followers.length,
+        totalFollowing: following.length,
       },
     },
     "Admin user details fetched successfully",
